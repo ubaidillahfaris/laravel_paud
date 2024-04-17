@@ -33,7 +33,35 @@ class Ppdb extends Model
         'alamat',
     ];
 
+    protected $casts = [
+        'kota_lahir' => 'string', 
+        'provinsi' => 'string', 
+        'kota_kab' => 'string', 
+        'kecamatan' => 'string', 
+        'kelurahan' => 'string', 
+    ];
+
     public function kelas(){
         return $this->hasOne(Kelas::class,'id','kelas_id');
+    }
+
+    public function kota_lahir(){
+        return $this->hasOne(Kota::class,'id','kota_lahir');
+    }
+
+    public function provinsi(){
+        return $this->hasOne(Provinsi::class,'id','provinsi');
+    }
+
+    public function kota_kab(){
+        return $this->hasOne(Kota::class,'id','kota_kab');
+    }
+
+    public function kecamatan(){
+        return $this->hasOne(Kecamatan::class,'id','kecamatan');
+    }
+
+    public function kelurahan(){
+        return $this->hasOne(Desa::class,'id','kelurahan');
     }
 }

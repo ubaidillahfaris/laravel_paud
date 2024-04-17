@@ -10,5 +10,6 @@ Route::middleware('guest')
     ->controller(PpdbController::class)
     ->group(function(){
         Route::post('store','store')->name('store');
+        Route::get('show','show')->name('show');
     });
 });

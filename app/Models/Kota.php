@@ -11,6 +11,10 @@ class Kota extends Model
     protected $table = 'reg_regencies';
     protected $fillable = ['province_id','name'];
 
+    protected $cast = [
+        'id' => 'bigInt'
+    ];
+
     public function provinsi(){
         return $this->belongsTo(Provinsi::class,'id','province_id');
     }

@@ -27,7 +27,7 @@ class PpdbTest extends TestCase
             'nik' => $IdFaker->nik(),
             'anak_ke' => $faker->numberBetween(1,4),
             'jenis_kelamin' => $faker->randomElement(['male', 'female']),
-            'kota_lahir' => $faker->numberBetween(1,100),
+            'kota_lahir' =>  $faker->randomElement([3506,3571]),
             'tanggal_lahir' => $faker->date('Y-m-d'),
             'nama_ayah' => $faker->name('male'), 
             'pekerjaan_ayah' => $faker->jobTitle(),
@@ -36,10 +36,10 @@ class PpdbTest extends TestCase
             'pekerjaan_ibu' => $faker->jobTitle(),
             'no_hp_ibu' => $faker->phoneNumber(),
             'foto' => UploadedFile::fake()->image('image.jpg'),
-            'provinsi' => $faker->numberBetween(1,100),
-            'kota_kab' => $faker->numberBetween(1,100),
-            'kecamatan' => $faker->numberBetween(1,100),
-            'kelurahan' => $faker->numberBetween(1,100),
+            'provinsi' => 35,
+            'kota_kab' => $faker->randomElement([3506,3571]),
+            'kecamatan' => 357101,
+            'kelurahan' => 3571011011,
             'alamat' => $usFaker->address(),
         ];
         $response = $this->post(route('ppdb.store'),$data);
