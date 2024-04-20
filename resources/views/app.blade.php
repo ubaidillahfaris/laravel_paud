@@ -1,21 +1,39 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-        <!-- Scripts -->
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="handheldfriendly" content="true" />
+        <meta name="MobileOptimized" content="width" />
+        <meta name="description" content="Mordenize" />
+        <meta name="author" content="" />
+        <meta name="keywords" content="Mordenize" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        
         @routes
-        @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
+        @vite([
+            'resources/js/app.js', 
+            "resources/js/Pages/{$page['component']}.vue"
+        ])
         @inertiaHead
     </head>
+
     <body class="font-sans antialiased">
         @inertia
     </body>
+    <script src="/libs/jquery/dist/jquery.min.js"></script>
+    <script src="/libs/simplebar/dist/simplebar.min.js"></script>
+    <script src="/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!--  core files -->
+    <script src="/js/app.min.js"></script>
+    <script src="/js/app.init.js"></script>
+    <script src="/js/app-style-switcher.js"></script>
+    <script src="/js/sidebarmenu.js"></script>
+    <script src="/js/custom.js"></script>
+    <!--  current page js files -->
+    <script src="/libs/owl.carousel/dist/owl.carousel.min.js"></script>
+    <script src="/libs/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="/js/dashboard.js"></script>
 </html>
