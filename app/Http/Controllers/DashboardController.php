@@ -8,7 +8,7 @@ use Inertia\Inertia;
 class DashboardController extends Controller
 {
     public function superadmin(){
-        
+        return Inertia::render('Dashboard/Superadmin');
     }
 
     public function admin(){

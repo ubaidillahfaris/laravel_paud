@@ -25,6 +25,10 @@ class LoginController extends Controller
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
 
             switch (Auth::user()->role) {
+                case 'superadmin':
+                    return redirect()
+                    ->route('dashboard.superadmin');
+                break;
                 case 'wali':
                         return redirect()
                         ->route('dashboard.wali');

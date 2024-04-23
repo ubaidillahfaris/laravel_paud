@@ -14,6 +14,7 @@ class Sekolah extends Model
         'kota_id',
         'kecamatan',
         'desa',
+        'alamat',
         'image',
         'kontak',
         'akreditasi',

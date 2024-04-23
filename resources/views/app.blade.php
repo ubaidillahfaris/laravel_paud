@@ -11,7 +11,6 @@
         <meta name="author" content="" />
         <meta name="keywords" content="Mordenize" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        
         @routes
         @vite([
             'resources/js/app.js', 
@@ -32,8 +31,4 @@
     <script src="/js/app-style-switcher.js"></script>
     <script src="/js/sidebarmenu.js"></script>
     <script src="/js/custom.js"></script>
-    <!--  current page js files -->
-    <script src="/libs/owl.carousel/dist/owl.carousel.min.js"></script>
-    <script src="/libs/apexcharts/dist/apexcharts.min.js"></script>
-    <script src="/js/dashboard.js"></script>
 </html>

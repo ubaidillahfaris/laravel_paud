@@ -5,16 +5,48 @@ namespace App\Http\Controllers;
 use App\Models\Sekolah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class SekolahController extends Controller
 {
+
+    public function index(){
+        return Inertia::render('Sekolah/Index');
+    }
+
+    public function add(){
+        return Inertia::render('Sekolah/Create');
+    }
+
+    public function show(Request $request){
+        $search = $request->search??null;
+        $provinsi = $request->provinsi??null;
+        $kota = $request->kota??null;
+
+        $sekolah = Sekolah::with(['provinsi','kota','kecamatan','desa'])
+        ->when($search, function($sub) use($search){
+            $sub->whereAny(['name','kontak'],'ILIKE',"%$search%");
+        })
+        ->when($provinsi, function($sub) use($provinsi, $kota){
+            $sub->where('provinsi_id',$provinsi)
+            ->when($kota,function($subKota) use($kota){
+                $subKota->where('kota_id',$kota);
+            });
+        })
+        ->paginate(10);
+
+        return response()
+        ->json($sekolah);
+
+    }
+
     public function store(Request $request){
         try {
             
-            $data = $request->validate([
+            $requestData = $request->validate([
                 'name' => 'required',
-                'provinsi_id' => 'nullable',
-                'kota_id' => 'nullable',
+                'provinsi' => 'nullable',
+                'kota' => 'nullable',
                 'kecamatan' => 'nullable',
                 'desa' => 'nullable',
                 'image' => 'nullable',
@@ -23,7 +55,23 @@ class SekolahController extends Controller
                 'lat' => 'nullable',
                 'long' => 'nullable',
                 'data' => 'nullable',
+                'alamat' => 'nullable'
             ]);
+
+            $data = [
+                'name' => $request->name,
+                'provinsi_id' => $request->provinsi,
+                'kota_id' => $request->kota,
+                'kecamatan' => $request->kecamatan,
+                'desa' => $request->desa,
+                'image' => $request->image,
+                'kontak' => $request->kontak,
+                'akreditasi' => $request->akreditasi,
+                'lat' => $request->lat,
+                'long' => $request->long,
+                'data' => $request->data,
+                'alamat' => $request->alamat
+            ];
 
             Sekolah::create($data);
 

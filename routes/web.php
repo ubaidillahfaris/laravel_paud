@@ -7,6 +7,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\SekolahController;
+use App\Http\Controllers\WilayahController;
+use App\Http\Middleware\RoleMiddleware;
+use App\Http\Middleware\SuperadminMiddleware;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -35,23 +38,45 @@ Route::middleware('auth')
         Route::get('wali','wali')->name('wali');
     });
 
-    Route::prefix('admin_sekolah')
-    ->name('admin_sekolah.')
-    ->controller(AdminSekolahController::class)
+
+    Route::prefix('wilayah')
+    ->name('wilayah.')
+    ->controller(WilayahController::class)
     ->group(function(){
-        Route::post('add_admin','addAdminSekolah')->name('add_admin');
-        Route::delete('delete/{user_id}','deleteAdmin')->name('delete');
-        Route::put('restore/{user_id}','restoreAdmin')->name('restore');
+        Route::get('provinsi','provinsi')->name('provinsi');
+        Route::get('kota/{province_id}','kota')->name('kota');
+        Route::get('kecamatan/{kota_id}','kecamatan')->name('kecamatan');
+        Route::get('desa/{kecamatan_id}','desa')->name('desa');
     });
 
-    Route::prefix('sekolah')
-    ->name('sekolah.')
-    ->controller(SekolahController::class)
+    Route::middleware(\App\Http\Middleware\SuperadminMiddleware::class)
     ->group(function(){
-        Route::post('store','store')->name('store');
-        Route::put('update/{id}','update')->name('update');
-        Route::delete('delete/{id}','delete')->name('delete');
+
+        Route::prefix('sekolah')
+        ->name('sekolah.')
+        ->controller(SekolahController::class)
+        ->group(function(){
+            Route::get('/','index')->name('index');
+            Route::get('add','add')->name('add');
+            Route::get('show','show')->name('show');
+            Route::post('store','store')->name('store');
+            Route::put('update/{id}','update')->name('update');
+            Route::delete('delete/{id}','delete')->name('delete');
+        });
+
+        Route::prefix('admin_sekolah')
+        ->name('admin_sekolah.')
+        ->controller(AdminSekolahController::class)
+        ->group(function(){
+            Route::post('add_admin','addAdminSekolah')->name('add_admin');
+            Route::delete('delete/{user_id}','deleteAdmin')->name('delete');
+            Route::put('restore/{user_id}','restoreAdmin')->name('restore');
+        });
     });
+
+    
+
+   
 
     Route::prefix('kelas')
     ->name('kelas.')
