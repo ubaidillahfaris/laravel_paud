@@ -6,7 +6,7 @@
                 <!--  Row 1 -->
                 <div class="row">
                     <div class="col-lg-6 col-sm-12">
-                    <!-- Monthly Earnings -->
+                    <!-- Monthly Earnings -->0
                         <div class="card">
                             <div class="card-body">
                             <div class="row alig n-items-start">
@@ -115,7 +115,7 @@
                                             0 Siswa
                                         </td>
                                         <td class="ps-0">
-                                            {{ new Date() }}
+                                            {{ item?.created_at??'' }}
                                         </td>
                                         <td class="ps-0">
                                             <div class="btn-group">
@@ -129,14 +129,8 @@
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><circle cx="8" cy="2.5" r=".75"/><circle cx="8" cy="8" r=".75"/><circle cx="8" cy="13.5" r=".75"/></g></svg>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li><a class="dropdown-item" href="#">Action</a></li>
                                                     <li>
-                                                    <a class="dropdown-item" href="#">Another action</a>
-                                                    </li>
-                                                    <li>
-                                                    <a class="dropdown-item" href="#"
-                                                        >Something else here</a
-                                                    >
+                                                        <Link class="dropdown-item" :href="route('admin_sekolah.add_admin_page',{'sekolah_id':item.id})">Tambah admin</Link>
                                                     </li>
                                                     <li>
                                                     <hr class="dropdown-divider" />
@@ -165,7 +159,7 @@
 import AuthenticatedLayout from '@/Layouts/Superadmin/Layout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import {Link} from '@inertiajs/vue3';
-
+import moment from 'moment';
 
 export default {
     components:{
@@ -192,7 +186,14 @@ export default {
             }).catch((err) => {
                 console.log(err)
             });
-            this.data = request
+
+            
+            const tempData = request.data.map((item) => {
+                item.created_at = moment(item.created_at).format('lll')
+                return item;
+            })
+            request.data = tempData;
+            this.data = request;
         },
         onClickPage(url){
             this.getSekolahData(url)

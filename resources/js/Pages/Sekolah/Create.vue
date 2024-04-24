@@ -117,7 +117,6 @@
 
             </div>
         </div>
-
     </AuthenticatedLayout>
 </template>
 
@@ -164,6 +163,12 @@ export default {
                 return{label: item.name, code: item.id}
             })
             this.provinsiData = data;
+        },
+        openToast(){
+            this.$toastr.defaultPosition = "toast-top-left";
+            this.$toastr.s(
+                "This Message From Toastr Plugin\n You can access this plugin : <font color='yellow'>this.$toastr</font>"
+            );
         }
     },
 }

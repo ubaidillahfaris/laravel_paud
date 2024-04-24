@@ -8,9 +8,32 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 class AdminSekolahController extends Controller
 {
+    public function addAdminPage($sekolah_id){
+        return Inertia::render('Sekolah/AddAdmin',[
+            'sekolah_id' => $sekolah_id
+        ]);
+    }
+
+    public function show(Request $request, $sekolah_id){
+        $search = $request->search??null;
+        
+        $adminSekolah = AdminSekolah::with('user')
+        ->where('sekolah_id',$sekolah_id)
+        ->when($search, function($sub) use($search){
+            $sub->whereHas('user',function($user) use($search){
+                $user->whereAny(['name','email'],'ILIKE',"%$search%");
+            });
+        })
+        ->paginate();
+
+        return response()
+        ->json($adminSekolah);
+    }
+
     public function addAdminSekolah(Request $request){
 
         try {

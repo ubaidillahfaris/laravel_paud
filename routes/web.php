@@ -8,8 +8,6 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\WilayahController;
-use App\Http\Middleware\RoleMiddleware;
-use App\Http\Middleware\SuperadminMiddleware;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -68,6 +66,8 @@ Route::middleware('auth')
         ->name('admin_sekolah.')
         ->controller(AdminSekolahController::class)
         ->group(function(){
+            Route::get('add_admin_page/{sekolah_id}','addAdminPage')->name('add_admin_page');
+            Route::get('show/{sekolah_id}','show')->name('show');
             Route::post('add_admin','addAdminSekolah')->name('add_admin');
             Route::delete('delete/{user_id}','deleteAdmin')->name('delete');
             Route::put('restore/{user_id}','restoreAdmin')->name('restore');
