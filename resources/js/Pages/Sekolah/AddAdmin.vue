@@ -21,6 +21,7 @@
                                         class="form-control"
                                         id="tb-fname"
                                         placeholder="Isi nama akun disini"
+                                        v-model="user.name"
                                         />
                                         <label for="tb-fname">Nama akun</label>
                                     </div>
@@ -32,6 +33,7 @@
                                         class="form-control"
                                         id="tb-fname"
                                         placeholder="Isi email akun disini"
+                                        v-model="user.email"
                                         />
                                         <label for="tb-fname">Email</label>
                                     </div>
@@ -43,6 +45,7 @@
                                         class="form-control"
                                         id="tb-fname"
                                         placeholder="Isi password akun disini"
+                                        v-model="user.password"
                                         />
                                         <label for="tb-fname">Password</label>
                                     </div>
@@ -54,7 +57,8 @@
                                         class="form-control"
                                         id="tb-fname"
                                         placeholder="Konfirmasi password akun disini"
-                                        />
+                                        v-model="user.password_confirmation"
+                                    />
                                         <label for="tb-fname">Confirm password</label>
                                     </div>
                                 </div>
@@ -65,13 +69,14 @@
                                         class="form-control"
                                         id="tb-fname"
                                         placeholder="Isi nomor disini"
+                                        v-model="user.kontak"
                                         />
                                         <label for="tb-fname">Nomor telepon</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6"></div>
                                 <div class="col-md-6">
-                                    <button class="btn btn-primary w-fit"> 
+                                    <button class="btn btn-primary w-fit" @click="postUserData"> 
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4c4.411 0 8 3.589 8 8s-3.589 8-8 8s-8-3.589-8-8s3.589-8 8-8m0-2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2m5 9h-4V7h-2v4H7v2h4v4h2v-4h4z"/></svg>
                                         Tambah
                                     </button>
@@ -175,7 +180,9 @@
 import AuthenticatedLayout from '@/Layouts/Superadmin/Layout.vue';
 import moment from 'moment';
 import Pagination from '@/Components/Pagination.vue';
-
+import { useForm } from '@inertiajs/vue3';
+import axios from 'axios';
+import Toast from '@/Toast.js'
 export default {
     props:{
         sekolah_id:{
@@ -194,7 +201,14 @@ export default {
     data() {
         return {
             data:{},
-            search:null
+            search:null,
+            user:useForm({
+                name:null,
+                email:null,
+                password:null,
+                password_confirmation:null,
+                kontak:null
+            })
         }
     },
     mounted() {
@@ -221,6 +235,32 @@ export default {
         onClickPage(url){
             this.getDataAdmin(url)
         },
+        async postUserData(){
+            this.user['sekolah_id'] = this.sekolah_id;
+            this.user['role'] = 'admin';
+            const request = await axios.post(route('admin_sekolah.add_admin'), this.user)
+            .then((result) => {
+                return result;
+            }).catch((err) => {
+                throw err;
+            });
+
+            if (request.status == 200) {
+                Toast.fire({
+                    'icon':'success',
+                    'title' : 'Berhasil menambahkan admin'
+                })
+
+                this.user.reset();
+                this.getDataAdmin()
+            }else{
+                Toast.fire({
+                    'icon':'error',
+                    'title' : 'Gagal menambahkan admin'
+                })
+            }
+
+        }
     },
 }
 </script>

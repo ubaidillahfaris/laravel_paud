@@ -2,7 +2,7 @@
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <li class="page-item" :class="{
-                'disabled' : item.active == false
+                'disabled' : item.url == null
             }" v-for="(item, index) in linksData" :key="index">
                 <button @click="onClick(item.url)"
                     class="page-link"

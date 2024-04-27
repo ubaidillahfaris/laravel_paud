@@ -6,7 +6,7 @@
                 <!--  Row 1 -->
                 <div class="row">
                     <div class="col-lg-6 col-sm-12">
-                    <!-- Monthly Earnings -->0
+                    <!-- Monthly Earnings -->
                         <div class="card">
                             <div class="card-body">
                             <div class="row alig n-items-start">
@@ -86,7 +86,7 @@
                                         <th scope="col">Nama Sekolah</th>
                                         <th scope="col">Provinsi</th>
                                         <th scope="col">Kota</th>
-                                        <th scope="col">Total Siswa</th>
+                                        <th scope="col">Jumlah admin</th>
                                         <th scope="col">Habis langganan</th>
                                         <th scope="col"></th>
                                     </tr>
@@ -112,7 +112,7 @@
                                             {{ item?.kota?.name??'' }}
                                         </td>
                                         <td class="ps-0">
-                                            0 Siswa
+                                            {{ item.admin_sekolah_count??0 }} akun
                                         </td>
                                         <td class="ps-0">
                                             {{ item?.created_at??'' }}

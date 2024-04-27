@@ -33,6 +33,7 @@ class SekolahController extends Controller
                 $subKota->where('kota_id',$kota);
             });
         })
+        ->withCount('adminSekolah')
         ->paginate(10);
 
         return response()

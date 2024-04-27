@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class AdminSekolah extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $fillable = ['user_id','sekolah_id'];
+    protected $fillable = ['user_id','sekolah_id','kontak'];
 
     public function user(){
         return $this->hasOne(User::class,'id','user_id');

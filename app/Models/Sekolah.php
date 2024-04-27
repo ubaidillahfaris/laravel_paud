@@ -38,4 +38,8 @@ class Sekolah extends Model
     public function desa(){
         return $this->hasOne(Desa::class,'id','desa');
     }
+
+    public function adminSekolah(){
+        return $this->hasMany(AdminSekolah::class,'sekolah_id','id');
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Models\AdminSekolah;
 use App\Models\User;
 use Exception;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
+use Illuminate\Validation\Rules;
 
 class AdminSekolahController extends Controller
 {
@@ -28,7 +30,7 @@ class AdminSekolahController extends Controller
                 $user->whereAny(['name','email'],'ILIKE',"%$search%");
             });
         })
-        ->paginate();
+        ->paginate(10);
 
         return response()
         ->json($adminSekolah);
@@ -38,11 +40,18 @@ class AdminSekolahController extends Controller
 
         try {
             $request->validate([
-                'user_id' => 'required',
-                'sekolah_id' => 'required'
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+                'role' => 'nullable',
+                'sekolah_id' => 'required',
+                'kontak' => 'nullable'
             ]);
 
-            $this->store($request->user_id, $request->sekolah_id);
+            $registerController = new RegisteredUserController();
+            $user = $registerController->createData($request);
+
+            $this->store($user->id, $request->sekolah_id, $request->kontak);
             return response()
             ->json([
                 'message' => 'Berhasil menambahkan admin'
@@ -100,7 +109,7 @@ class AdminSekolahController extends Controller
         }
     }
 
-    public function store(int $user_id, int $sekolah_id){
+    public function store(int $user_id, int $sekolah_id, String $kontak = null ){
         try {
 
             $user = User::find($user_id);
@@ -111,6 +120,7 @@ class AdminSekolahController extends Controller
             AdminSekolah::create([
                 'user_id' => $user_id,
                 'sekolah_id' => $sekolah_id,
+                'kontak' => $kontak
             ]);
 
         } catch (\Throwable $th) {
