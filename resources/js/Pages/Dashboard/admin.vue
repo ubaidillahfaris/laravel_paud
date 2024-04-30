@@ -1,13 +1,7 @@
 <template>
     <div>
         <AuthenticatedLayout>
-            <div class="body-wrapper">
-          
-                <!-- Nabar -->
-                <Navbar></Navbar>
-                <!-- end Nabar -->
-
-                <div class="container-fluid">
+           
                 <!--  Owl carousel -->
                 <!--  Row 1 -->
                 <div class="row">
@@ -493,14 +487,12 @@
                     </div>
                     </div>
                 </div>
-                </div>
-            </div>
         </AuthenticatedLayout>
     </div>
 </template>
 
 <script>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AuthenticatedLayout from '@/Layouts/Admin/Layout.vue';
 import Navbar from '@/Layouts/Navbar.vue';
 export default {
     components:{

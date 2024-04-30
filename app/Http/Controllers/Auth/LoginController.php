@@ -29,6 +29,10 @@ class LoginController extends Controller
                     return redirect()
                     ->route('dashboard.superadmin');
                 break;
+                case 'admin':
+                    return redirect()
+                    ->route('dashboard.admin');
+                break;
                 case 'wali':
                         return redirect()
                         ->route('dashboard.wali');

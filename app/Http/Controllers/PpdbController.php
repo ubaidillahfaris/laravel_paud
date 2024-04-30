@@ -7,9 +7,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 class PpdbController extends Controller
 {
+
+    public function index(){
+        return Inertia::render('Ppdb/Index');
+    }
+
+    public function create(){
+        return Inertia::render('Ppdb/Create');
+    }
+
+    public function createGroup(Request $request){
+        try {
+            //code...
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
     public function store(Request $request){
         
         $path = '';

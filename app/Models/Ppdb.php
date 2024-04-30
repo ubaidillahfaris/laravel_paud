@@ -11,6 +11,7 @@ class Ppdb extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'ppdb_master_id',
         'kelas_id',
         'nama_lengkap',
         'nama_panggilan',
@@ -32,6 +33,10 @@ class Ppdb extends Model
         'kelurahan',
         'alamat',
     ];
+
+    public function ppdbMaster(){
+        return $this->belongsTo(PpdbMaster::class,'id','ppdb_master_id');
+    }
 
     protected $casts = [
         'kota_lahir' => 'string', 

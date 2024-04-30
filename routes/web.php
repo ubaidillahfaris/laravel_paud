@@ -8,10 +8,11 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\WilayahController;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::middleware('guest')
+Route::middleware('web')
 ->group(function(){
     Route::post('register',[RegisteredUserController::class,'store'])->name('register');
     Route::get('register',function(){
@@ -75,22 +76,29 @@ Route::middleware('auth')
     });
 
     
+    Route::middleware(AdminMiddleware::class)
+    ->group(function(){
 
+        Route::prefix('kelas')
+        ->name('kelas.')
+        ->controller(KelasController::class)
+        ->group(function(){
+            Route::post('store','store')->name('store');
+            Route::delete('delete','delete')->name('delete');
+        });
+    
+        Route::prefix('ppdb')
+        ->name('ppdb.')
+        ->controller(PpdbController::class)
+        ->group(function(){
+            Route::get('/','index')->name('index');
+            Route::get('create','create')->name('create');
+            Route::post('create_group','createGroup')->name('create_group');
+            Route::post('store','store')->name('store');
+            Route::get('show','show')->name('show');
+        });
+    });
    
 
-    Route::prefix('kelas')
-    ->name('kelas.')
-    ->controller(KelasController::class)
-    ->group(function(){
-        Route::post('store','store')->name('store');
-        Route::delete('delete','delete')->name('delete');
-    });
-
-    Route::prefix('ppdb')
-    ->name('ppdb.')
-    ->controller(PpdbController::class)
-    ->group(function(){
-        Route::post('store','store')->name('store');
-        Route::get('show','show')->name('show');
-    });
+   
 });
