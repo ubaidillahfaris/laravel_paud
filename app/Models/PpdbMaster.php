@@ -9,4 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class PpdbMaster extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected $fillable = [
+        'nama_gelombang','informasi_umum','awal_pendaftaran','akhir_pendaftaran'
+    ];
 }

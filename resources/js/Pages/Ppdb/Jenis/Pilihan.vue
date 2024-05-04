@@ -26,7 +26,7 @@
             <label for="tb-fname">Jawaban {{ index + 1 }}</label>
         </div>
         
-        <button @click="tambahPilihanHandler" class="btn btn-secondary">Tambah Jawaban</button>
+        <button @click="tambahPilihanHandler" class="btn btn-outline-primary ">Add</button>
     </div>
 </template>
 

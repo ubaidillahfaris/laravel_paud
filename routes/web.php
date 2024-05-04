@@ -6,9 +6,11 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PpdbController;
+use App\Http\Controllers\PpdbMasterController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\WilayahController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Models\PpdbMaster;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -88,14 +90,24 @@ Route::middleware('auth')
         });
     
         Route::prefix('ppdb')
-        ->name('ppdb.')
-        ->controller(PpdbController::class)
         ->group(function(){
-            Route::get('/','index')->name('index');
-            Route::get('create','create')->name('create');
-            Route::post('create_group','createGroup')->name('create_group');
-            Route::post('store','store')->name('store');
-            Route::get('show','show')->name('show');
+
+            Route::name('ppdb.')
+            ->controller(PpdbController::class)
+            ->group(function(){
+                Route::get('/','index')->name('index');
+                Route::get('create','create')->name('create');
+                Route::post('create_group','createGroup')->name('create_group');
+                Route::post('store','store')->name('store');
+                Route::get('show','show')->name('show');
+            });
+
+            Route::prefix('master')
+            ->name('ppdb.master.')
+            ->controller(PpdbMasterController::class)
+            ->group(function(){
+                Route::post('create','create')->name('create');
+            });
         });
     });
    

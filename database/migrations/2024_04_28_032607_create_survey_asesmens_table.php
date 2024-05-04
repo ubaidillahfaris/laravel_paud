@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('survey_asesmens', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('ppdb_master');
+            $table->json('data');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
