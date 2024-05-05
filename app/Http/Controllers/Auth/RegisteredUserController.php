@@ -55,4 +55,35 @@ class RegisteredUserController extends Controller
         ]);
         return $user;
     }
+
+    public function registerApi(Request $request, LoginController $loginController){
+        try {
+            //code...
+            $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            ]);
+    
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+            
+            event(new Registered($user));
+            $requestData = new Request([
+                'email' => $request->email,
+                'password' => $request->password
+            ]);
+            $loginResponse = $loginController->loginApi($requestData);
+            return $loginResponse;
+        } catch (\Throwable $th) {
+            return response()
+            ->json([
+                'message' => 'Gagal membuat user'
+            ]);
+        }
+
+    }
 }
