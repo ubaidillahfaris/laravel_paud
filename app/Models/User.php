@@ -45,4 +45,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function sekolah(){
+        return $this->hasOneThrough(Sekolah::class,AdminSekolah::class,'user_id','id','id','sekolah_id');
+    }
 }

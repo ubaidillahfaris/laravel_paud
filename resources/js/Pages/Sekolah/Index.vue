@@ -71,12 +71,6 @@
                                 <p class="card-subtitle mb-0">Daftar mitra sekolah</p>
                             </div>
                             <div>
-                                <select class="form-select">
-                                    <option value="1">March 2023</option>
-                                    <option value="2">April 2023</option>
-                                    <option value="3">May 2023</option>
-                                    <option value="4">June 2023</option>
-                                </select>
                             </div>
                         </div>
                         <div class="table-responsive">

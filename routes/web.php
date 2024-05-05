@@ -107,6 +107,7 @@ Route::middleware('auth')
             ->controller(PpdbMasterController::class)
             ->group(function(){
                 Route::post('create','create')->name('create');
+                Route::get('data','show')->name('show');
             });
         });
     });
