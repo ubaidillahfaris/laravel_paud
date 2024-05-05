@@ -15,8 +15,8 @@ class PpdbMasterController extends Controller
             $ppdbMaster = $request->validate([
                 'nama_gelombang' => 'required',
                 'informasi_umum' => 'nullable',
-                'awal_pendaftaran' => 'required',
-                'akhir_pendaftaran' => 'required'
+                'awal_pendaftaran' => 'required|date',
+                'akhir_pendaftaran' => 'required|date|after_or_equal:awal_pendaftaran'
             ]);
 
             $ppdbMaster = PpdbMaster::create($ppdbMaster);

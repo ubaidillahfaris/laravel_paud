@@ -140,64 +140,66 @@
                   <h4 class="card-title">Pertanyaan Asesmen</h4>
                   <div class="todo-widget overflow-y-auto" style="height: calc(100vh / 3);">
                     <ul class="list-task todo-list list-group mb-0" data-role="tasklist">
-                      <li 
-                      @click="selectSoalHandler(item)"
-                      v-for="(item, index) in soalComponent" :key="index"
-                      class="
-                          list-group-item
-                          todo-item
-                          border-0
-                          mb-0
-                          py-3
-                          pe-3
-                          ps-0
-                        " data-role="task">
-                        <div class="form-check">
-                          <input type="checkbox" class="form-check-input success check-light-success" id="newc1" />
-                          <label class="
-                              form-check-label
-                              todo-label
-                              d-md-flex
-                              align-items-center
-                              ps-2
-                            " for="newc1">
-                            <div>
-                              <h5 class="todo-desc mb-0 fs-3 font-weight-medium">
-                                {{ item.text }}
-                              </h5>
-                              <div class="todo-desc text-muted fw-normal fs-2">
-                                {{ item.tipe }}
-                              </div>
-                            </div>
-                            <div class="ms-auto">
-                              <div class="dropdown dropstart">
-                                <a href="#" class="link" id="new" data-bs-toggle="dropdown" aria-expanded="false">
-                                  <i class="ti ti-dots fs-6 text-dark"></i>
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="new">
-                                  <li>
-                                    <button
-                                    class="btn dropdown-item "
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#bs-example-modal-sm"
-                                    >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5c-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0a9.821 9.821 0 0 0-17.64 0"/></svg>
-                                    <span>Detail</span>
-                                    </button>
-                                    <!-- sample modal content -->
-                                  </li>
-                                  <li>
-                                    <button @click="hapusPertanyaanStack(index)" class="btn btn-danger dropdown-item" href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6zM8 9h8v10H8zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                                        <span>Hapus</span>
-                                    </button>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          </label>
-                        </div>
-                      </li>
+                        <template v-for="(item, index) in soalComponent" :key="index">
+                                <li 
+                                v-if="item.tipe != null"
+                                @click="selectSoalHandler(item)"
+                                class="
+                                    list-group-item
+                                    todo-item
+                                    border-0
+                                    mb-0
+                                    py-3
+                                    pe-3
+                                    ps-0
+                                " data-role="task">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input success check-light-success" id="newc1" />
+                                    <label class="
+                                        form-check-label
+                                        todo-label
+                                        d-md-flex
+                                        align-items-center
+                                        ps-2
+                                    " for="newc1">
+                                    <div>
+                                        <h5 class="todo-desc mb-0 fs-3 font-weight-medium">
+                                        {{ item.text }}
+                                        </h5>
+                                        <div class="todo-desc text-muted fw-normal fs-2">
+                                        {{ item.tipe }}
+                                        </div>
+                                    </div>
+                                    <div class="ms-auto">
+                                        <div class="dropdown dropstart">
+                                        <a href="#" class="link" id="new" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ti ti-dots fs-6 text-dark"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="new">
+                                            <li>
+                                            <button
+                                            class="btn dropdown-item "
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#bs-example-modal-sm"
+                                            >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M12 9a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3m0-4.5c5 0 9.27 3.11 11 7.5c-1.73 4.39-6 7.5-11 7.5S2.73 16.39 1 12c1.73-4.39 6-7.5 11-7.5M3.18 12a9.821 9.821 0 0 0 17.64 0a9.821 9.821 0 0 0-17.64 0"/></svg>
+                                            <span>Detail</span>
+                                            </button>
+                                            <!-- sample modal content -->
+                                            </li>
+                                            <li>
+                                            <button @click="hapusPertanyaanStack(index)" class="btn btn-danger dropdown-item" href="#">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6zM8 9h8v10H8zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                                <span>Hapus</span>
+                                            </button>
+                                            </li>
+                                        </ul>
+                                        </div>
+                                    </div>
+                                    </label>
+                                </div>
+                                </li>
+                        </template>
                       
                     </ul>
                   </div>
@@ -271,7 +273,7 @@ import {Link, useForm} from '@inertiajs/vue3';
 import Teks from '@/Pages/Ppdb/Jenis/Teks.vue';
 import Pilihan from '@/Pages/Ppdb/Jenis/Pilihan.vue';
 import axios from 'axios';
-
+import Toast from '@/Toast.js'
 export default {
     components:{
         AuthenticatedLayout,Link,Teks, Pilihan
@@ -332,17 +334,33 @@ export default {
             this.soalComponent.splice(index,1);
         },
         async postPertanyaanHandler(){ 
-            const informasi_umum = this.form
+            try {
+                const informasi_umum = this.form
 
-            const data = {
-                nama_gelombang:informasi_umum.nama_gelombang,
-                awal_pendaftaran:informasi_umum.awal_pendaftaran,
-                akhir_pendaftaran:informasi_umum.akhir_pendaftaran,
-                informasi_umum:informasi_umum.informasi_umum,
-                data:this.soalComponent
+                const data = {
+                    nama_gelombang:informasi_umum.nama_gelombang,
+                    awal_pendaftaran:informasi_umum.awal_pendaftaran,
+                    akhir_pendaftaran:informasi_umum.akhir_pendaftaran,
+                    informasi_umum:informasi_umum.informasi_umum,
+                    data:this.soalComponent
+                }
+
+
+                await axios.post(route('ppdb.master.create'),data);
+                Toast.fire({
+                    'icon':'success',
+                    'title' : 'Berhasil menambahkan ppdb'
+                })
+                setTimeout(() => {
+                    window.location.href = route('ppdb.index')
+                }, 3000);
+            } catch (error) {
+                Toast.fire({
+                    'icon':'error',
+                    'title' : 'Gagal menambahkan ppdb'
+                })
             }
-
-            await axios.post(route('ppdb.master.create'),data);
+           
         },
         selectSoalHandler(item){
             this.form.tipe = item.tipe;
