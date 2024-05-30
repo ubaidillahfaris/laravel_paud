@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -20,11 +21,13 @@ class PpdbTest extends TestCase
         $IdFaker = new \Faker\Provider\id_ID\Person($faker);
         $usFaker = new \Faker\Provider\en_Us\Address($faker);
 
+        
         $data  = [
+            'ppdb_master_id' => 1,
             'kelas_id' => $faker->numberBetween(1,100),
             'nama_lengkap' => $faker->name(),
             'nama_panggilan' => $faker->userName(),
-            'nik' => $IdFaker->nik(),
+            'nik' => '3576014403910003',
             'anak_ke' => $faker->numberBetween(1,4),
             'jenis_kelamin' => $faker->randomElement(['male', 'female']),
             'kota_lahir' =>  $faker->randomElement([3506,3571]),
@@ -42,7 +45,9 @@ class PpdbTest extends TestCase
             'kelurahan' => 3571011011,
             'alamat' => $usFaker->address(),
         ];
-        $response = $this->post(route('ppdb.store'),$data);
+
+        $user = User::where('id',29)->first();
+        $response = $this->actingAs($user)->post(url('api/wali/ppdb_anak/create'),$data);
         $response->assertStatus(200);
     }
 }

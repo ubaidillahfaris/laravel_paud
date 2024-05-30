@@ -22,4 +22,21 @@ class SurveyAsesmenController extends Controller
             throw $th;
         }
     }
+
+    public function showAsesmenFromPpdbMaster(int $ppdb_master){
+        try {
+            
+            $surveyAsesmen = SurveyAsesmen::where('ppdb_master',$ppdb_master)
+            ->first();
+
+            return response()
+            ->json($surveyAsesmen);
+
+        } catch (\Throwable $th) {
+            return response()
+            ->json([
+                'message' => $th->getMessage()
+            ],500);
+        }
+    }
 }

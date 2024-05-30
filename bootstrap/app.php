@@ -16,7 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
+        $middleware->api(append:[
 
+        ])->alias([
+            'role' => \App\Http\Middleware\Api\RoleMiddleware::class
+        ]);
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {

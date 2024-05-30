@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Sekolah extends Model
 {
@@ -22,6 +23,15 @@ class Sekolah extends Model
         'long',
         'data',
     ];
+
+    protected $appends = ['foto_url'];
+
+    public function getFotoUrlAttribute()
+    {
+        return url(
+            Storage::url($this->attributes['image'])
+        );
+    }
 
     public function provinsi(){
         return $this->hasOne(Provinsi::class,'id','provinsi_id');

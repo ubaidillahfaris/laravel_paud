@@ -57,21 +57,27 @@ class LoginController extends Controller
             ]);
     
             if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
-    
+                
                 $token = Auth::user()->createToken('auth_token')->plainTextToken;
-                // dd(Auth::user());
+                
                 return response()->json([
                     'message' => 'Login success',
                     'access_token' => $token,
-                    'token_type' => 'Bearer'
+                    'token_type' => 'Bearer',
+                    'user' => Auth::user()
                 ]);
+            }else{
+                return response()
+                ->json([
+                    'message' => 'gagal login'
+                ],500);
             }
     
            } catch (\Throwable $th) {
             return response()
             ->json([
                 'message' => 'gagal login'
-            ]);
+            ],500);
            }
     }
 

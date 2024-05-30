@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sekolah;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
@@ -19,9 +20,21 @@ class SekolahController extends Controller
     }
 
     public function show(Request $request){
+
         $search = $request->search??null;
         $provinsi = $request->provinsi??null;
         $kota = $request->kota??null;
+
+
+        switch (Auth::user()->role) {
+            case 'wali':
+                $detailUser = Auth::user()->wali;
+                break;
+            
+            default:
+                $detailUser = null;
+                break;
+        }
 
         $sekolah = Sekolah::with(['provinsi','kota','kecamatan','desa'])
         ->when($search, function($sub) use($search){
@@ -33,12 +46,32 @@ class SekolahController extends Controller
                 $subKota->where('kota_id',$kota);
             });
         })
+        ->when($detailUser, function($sub) use($detailUser){
+            $sub->where('kecamatan',$detailUser->kecamatan_id);
+        })
         ->withCount('adminSekolah')
         ->paginate(10);
 
         return response()
         ->json($sekolah);
 
+    }
+
+    public function detail(Request $request){
+        try {
+            $id = $request->id;
+            $sekolah = Sekolah::find($id)
+            ->with(['provinsi','kota','kecamatan','desa'])
+            ->first();
+
+            return response()
+            ->json($sekolah);
+        } catch (\Throwable $th) {
+            return response()
+            ->json([
+                'message' => $th->getMessage()
+            ],500);
+        }
     }
 
     public function store(Request $request){

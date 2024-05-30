@@ -15,7 +15,20 @@ class PpdbMasterController extends Controller
     public function show(Request $request, UserController $userController){
         $user = $userController->adminWithSekolah(Auth::user()->id);
         $ppdbMaster = PpdbMaster::where('sekolah_id',$user->sekolah->id)
+        ->where('awal_pendaftaran','<=',date('Y-m-d'))
+        ->where('akhir_pendaftaran','>=',date('Y-m-d'))
         ->withCount('ppdb')
+        ->paginate(10);
+
+        return response()
+        ->json($ppdbMaster);
+    }
+
+    public function showPpdbFromSchool(Request $request, int $sekolah_id){
+        $ppdbMaster = PpdbMaster::where('sekolah_id',$sekolah_id)
+        ->where('awal_pendaftaran','<=',date('Y-m-d'))
+        ->where('akhir_pendaftaran','>=',date('Y-m-d'))
+        ->where('is_active',true)
         ->paginate(10);
 
         return response()

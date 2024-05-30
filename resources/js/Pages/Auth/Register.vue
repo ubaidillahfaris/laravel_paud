@@ -23,17 +23,21 @@
                   <form class="mt-4">
                     <div class="mb-3">
                       <label for="exampleInputEmail1" class="form-label">Name</label>
-                      <input type="text" class="form-control" id="exampleInputtext" aria-describedby="textHelp">
+                      <input type="text" class="form-control" v-model="form.name" id="exampleInputtext" aria-describedby="textHelp">
                     </div>
                     <div class="mb-3">
                       <label for="exampleInputEmail1" class="form-label">Email address</label>
-                      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                      <input type="email" class="form-control" v-model="form.email" id="exampleInputEmail1" aria-describedby="emailHelp">
                     </div>
                     <div class="mb-4">
                       <label for="exampleInputPassword1" class="form-label">Password</label>
-                      <input type="password" class="form-control" id="exampleInputPassword1">
+                      <input type="password" class="form-control" v-model="form.password" id="exampleInputPassword1">
+                    </div>     
+                    <div class="mb-4">
+                      <label for="exampleInputPassword1" class="form-label">Password</label>
+                      <input type="password" class="form-control" v-model="form.password_confirmation" id="exampleInputPassword1">
                     </div>                    
-                    <a href="./authentication-login.html" class="btn btn-primary w-100 py-8 mb-4 rounded-2">Sign Up</a>
+                    <button type="button" @click="submit" class="btn btn-primary w-100 py-8 mb-4 rounded-2">Sign Up</button>
                     <div class="d-flex align-items-center">
                       <p class="fs-4 mb-0 text-dark">Already have an Account?</p>
                       <a class="text-primary fw-medium ms-2" :href="route('login')">Sign In</a>
@@ -56,6 +60,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue'
+import axios from 'axios';
 
 const form = useForm({
     name: '',
@@ -64,9 +69,12 @@ const form = useForm({
     password_confirmation: '',
 });
 
-const submit = () => {
-    form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
-    });
+const submit = async () => {
+
+  const request = await axios.post(route('register'),form)
+  const response = request.data;
+
+  console.log(response);
+  
 };
 </script>

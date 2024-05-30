@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Ppdb extends Model
 {
@@ -32,10 +33,24 @@ class Ppdb extends Model
         'kecamatan',
         'kelurahan',
         'alamat',
+        'ortu_user_id'
     ];
 
+    protected $appends = ['foto_url'];
+
+    public function getFotoUrlAttribute()
+    {
+        return url(
+            Storage::url($this->attributes['foto'])
+        );
+    }
+
+    public function sekolah(){
+        return $this->hasOneThrough(Sekolah::class,PpdbMaster::class, 'id','id','ppdb_master_id','sekolah_id');
+    }
+
     public function ppdbMaster(){
-        return $this->belongsTo(PpdbMaster::class,'id','ppdb_master_id');
+        return $this->belongsTo(PpdbMaster::class,'ppdb_master_id','id');
     }
 
     protected $casts = [

@@ -11,7 +11,7 @@ class PpdbMaster extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'nama_gelombang','informasi_umum','awal_pendaftaran','akhir_pendaftaran','sekolah_id'
+        'nama_gelombang','informasi_umum','awal_pendaftaran','akhir_pendaftaran','sekolah_id','is_active'
     ];
 
     public function ppdb(){

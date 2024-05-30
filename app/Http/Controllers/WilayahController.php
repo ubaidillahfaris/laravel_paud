@@ -16,8 +16,12 @@ class WilayahController extends Controller
         ->json($provinsi);
     }
 
-    public function kota(int $province_id){
-        $kota = Kota::where('province_id',$province_id)
+    public function kota(int $province_id = null){
+        $kota = Kota::when(
+            $province_id,function($item) use($province_id){
+                $item->where('province_id',$province_id);
+            }
+        )
         ->get();
 
         return response()

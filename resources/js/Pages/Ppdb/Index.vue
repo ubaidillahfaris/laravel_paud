@@ -169,6 +169,7 @@
                            <th scope="col">Tanggal Awal</th>
                            <th scope="col">Berakhir</th>
                            <th scope="col">Jumlah Pendaftar</th>
+                           <th scope="col">Status</th>
                            <th scope="col">Created at</th>
                            </tr>
                        </thead>
@@ -193,6 +194,9 @@
                            </td>
                            <td>
                                <p class="fs-3 text-dark mb-0">{{ item.ppdb_count  }} Pendaftar</p>
+                           </td>
+                           <td>
+                               <p class="fs-3 text-dark mb-0">{{ item.is_active  }} </p>
                            </td>
                            <td>
                                <p class="mb-0 fs-3">{{item.created_at}}</p>
@@ -233,6 +237,7 @@ export default {
                 item.awal_pendaftaran = moment(item.awal_pendaftaran).format('ll')
                 item.akhir_pendaftaran = moment(item.akhir_pendaftaran).format('ll')
                 item.created_at = moment(item.created_at).format('ll')
+                item.is_active = item.is_active == true ? 'Aktif' : 'Tidak aktif';
             return item
            })
 

@@ -14,8 +14,12 @@ use App\Models\PpdbMaster;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+
+
 Route::middleware('web')
 ->group(function(){
+
+    Route::get('/',function(){return redirect('login');});
     Route::post('register',[RegisteredUserController::class,'store'])->name('register');
     Route::get('register',function(){
         return Inertia::render('Auth/Register');
