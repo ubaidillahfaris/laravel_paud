@@ -7,16 +7,20 @@
             </div>
         </div>
 
-        <!-- tabel -->
-            <div class="row justify-between">
-                <div class="col-md-2">
-                    <select v-model="selectedLength" class="form-select">
-                        <option :value="item" v-for="(item, index) in lengthData" :key="index">
-                            {{ item }}
-                        </option>
-                    </select>
-                </div>
+        <!-- page length filter -->
+        <div class="row justify-between">
+            <div class="col-md-2">
+                <select v-model="selectedLength" class="form-select">
+                    <option :value="item" v-for="(item, index) in lengthData" :key="index">
+                        {{ item }}
+                    </option>
+                </select>
             </div>
+        </div>
+        <!-- end page length filter -->
+        
+        
+        <!-- tabel -->
             <div class="table-responsive">
                 <table class="table align-middle text-nowrap mb-0">
                 <thead>
@@ -67,6 +71,8 @@
                 </table>
             </div>
         <!-- end tabel -->
+        <div class="py-2"></div>
+        <Pagination @on-click="onSelectPageHandler" :links-data=paginationList></Pagination>
     </div>
 </template>
 
@@ -79,10 +85,14 @@ import Swal from 'sweetalert2';
 import Toast from '@/Toast.js'
 
 export default {
+    components:{
+        Pagination
+    },
     data() {
         return {
             selectedLength:10,
             dataList:[],
+            paginationList:[]
         }
     },
     beforeMount() {
@@ -109,14 +119,27 @@ export default {
         }
     },
     methods: {
-        async fetchData(){
-            let request = await axios.get(route('tahun_ajaran.show',{
-                _query:{
-                    length: this.selectedLength
-                }
-            }));
+        async fetchData(urlParam){
+            let url;
+            if (!url) {
+                url = route('tahun_ajaran.show',{
+                    _query:{
+                        length: this.selectedLength
+                    }
+                });
+            }else{
+                url = urlParam
+            }
+
+
+            let request = await axios.get(url);
+
+
             let response = request.data;
             let mappingData = response.data;
+
+            this.paginationList = response.links
+
             this.dataList = mappingData.map((item) => {
                 return {
                     'id' : item.id,
@@ -175,6 +198,9 @@ export default {
             } catch (error) {
                 throw error
             }
+        },
+        onSelectPageHandler(url){
+            this.fetchData(url)
         }
     },
 }

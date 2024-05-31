@@ -82,13 +82,22 @@ class TahunPelajaranController extends Controller
     }
 
     public function show(Request $request){
+        // parameter
         $length = $request->length??10;
         $getTahunAjaran = $request->tahun_ajaran??null;
         $tahun_ajaran = explode('/',$getTahunAjaran);
+
+        // mengambil data sekolah user request
+        $user = User::where('id',Auth::user()->id)
+        ->with('sekolah')
+        ->first();
+
+        // mengambil data tahun ajaran
         $tahunAjaran = TahunPelajaran::with('kota_pembagian')->when(count($tahun_ajaran) > 1,function($sub) use($tahun_ajaran){
             $sub->where('start_tahun',$tahun_ajaran[0])
             ->where('end_tahun',$tahun_ajaran[1]);
         })
+        ->where('sekolah_id',$user->sekolah->id)
         ->paginate($length);
         return response()
         ->json($tahunAjaran);
