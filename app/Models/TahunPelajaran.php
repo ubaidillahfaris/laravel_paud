@@ -13,4 +13,8 @@ class TahunPelajaran extends Model
     protected $fillable = [
         'sekolah_id','start_tahun','end_tahun','semester','id_kota_pembagian_raport','tanggal_pembagian_raport','is_active','created_by'
     ];
+
+    public function kota_pembagian(){
+        return $this->hasOne(Kota::class,'id','id_kota_pembagian_raport');
+    }
 }

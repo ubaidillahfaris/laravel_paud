@@ -75,28 +75,25 @@
                         </div>
                     </div>
             </div>
-            <div class="w-full card p-4">
-                <div class="d-sm-flex d-block align-items-center justify-content-between mb-9">
-                       <div class="mb-3 mb-sm-0">
-                            <h5 class="card-title fw-semibold">Daftar Tahun Ajaran</h5>
-                       </div>
-                   </div>
-            </div>
+
+            <!-- Component daftar tahun ajaran -->
+            <DataListTahunAjaran></DataListTahunAjaran>
+            
         </div>
     </AuthenticatedLayout>
 </template>
 
 <script>
 import AuthenticatedLayout from '@/Layouts/Admin/Layout.vue';
-import Pagination from '@/Components/Pagination.vue';
+
 import {Link, useForm} from '@inertiajs/vue3';
-import moment from 'moment';
 import axios from 'axios';
 import Toast from '@/Toast.js'
+import DataListTahunAjaran from '@/Pages/TahunAjaran/DataList.vue'
 
 export default {
     components:{
-        AuthenticatedLayout, Link
+        AuthenticatedLayout, Link, DataListTahunAjaran
     },
     data() {
         return {

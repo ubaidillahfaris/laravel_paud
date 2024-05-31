@@ -80,4 +80,39 @@ class TahunPelajaranController extends Controller
             ],500);
         }
     }
+
+    public function show(Request $request){
+        $length = $request->length??10;
+        $getTahunAjaran = $request->tahun_ajaran??null;
+        $tahun_ajaran = explode('/',$getTahunAjaran);
+        $tahunAjaran = TahunPelajaran::with('kota_pembagian')->when(count($tahun_ajaran) > 1,function($sub) use($tahun_ajaran){
+            $sub->where('start_tahun',$tahun_ajaran[0])
+            ->where('end_tahun',$tahun_ajaran[1]);
+        })
+        ->paginate($length);
+        return response()
+        ->json($tahunAjaran);
+    }
+
+    public function updateStatus(Request $request, $id){
+        try {
+
+            $status = $request->status;
+            TahunPelajaran::where('id',$id)
+            ->update([
+                'is_active' => $status
+            ]);
+
+            return response()
+            ->json([
+                'message' => 'Berhasil mengubah status tahun ajaran'
+            ]);
+        } catch (\Throwable $th) {
+            return response()
+            ->json([
+                'message' => 'Gagal mengubah status tahun ajaran',
+                'description' => $th->getMessage()
+            ],500);
+        }
+    }
 }

@@ -100,6 +100,8 @@ Route::middleware('auth')
         ->group(function(){
             Route::get('index','index')->name('index');
             Route::post('create','create')->name('create');
+            Route::get('show','show')->name('show');
+            Route::put('update_status/{id}','updateStatus')->name('update_status');
         });
 
         Route::prefix('ppdb')
