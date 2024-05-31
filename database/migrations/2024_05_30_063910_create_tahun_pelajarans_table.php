@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('tahun_pelajarans', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('sekolah_id');
             $table->integer('start_tahun');
             $table->integer('end_tahun');
             $table->string('semester');
             $table->string('id_kota_pembagian_raport')->nullable();
-            $table->date('tanggal_pembangian_raport')->nullable();
+            $table->date('tanggal_pembagian_raport')->nullable();
             $table->boolean('is_active');
             $table->unsignedBigInteger('created_by');
             $table->timestamps();
@@ -28,6 +29,8 @@ return new class extends Migration
             $table->foreign('created_by')
             ->on('users')->references('id')->onDelete('SET NULL')
             ->onUpdate('SET NULL');
+            $table->foreign('sekolah_id')->on('sekolahs')->references('id')
+            ->onDelete('Cascade')->onUpdate('Cascade');
         });
     }
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\PpdbMasterController;
 use App\Http\Controllers\SekolahController;
+use App\Http\Controllers\TahunPelajaranController;
 use App\Http\Controllers\WilayahController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Models\PpdbMaster;
@@ -16,7 +17,7 @@ use Inertia\Inertia;
 
 
 
-Route::middleware('web')
+Route::middleware('guest')
 ->group(function(){
 
     Route::get('/',function(){return redirect('login');});
@@ -49,7 +50,7 @@ Route::middleware('auth')
     ->controller(WilayahController::class)
     ->group(function(){
         Route::get('provinsi','provinsi')->name('provinsi');
-        Route::get('kota/{province_id}','kota')->name('kota');
+        Route::get('kota/{province_id?}','kota')->name('kota');
         Route::get('kecamatan/{kota_id}','kecamatan')->name('kecamatan');
         Route::get('desa/{kecamatan_id}','desa')->name('desa');
     });
@@ -93,6 +94,14 @@ Route::middleware('auth')
             Route::delete('delete','delete')->name('delete');
         });
     
+        Route::prefix('tahun_ajaran')
+        ->name('tahun_ajaran.')
+        ->controller(TahunPelajaranController::class)
+        ->group(function(){
+            Route::get('index','index')->name('index');
+            Route::post('create','create')->name('create');
+        });
+
         Route::prefix('ppdb')
         ->group(function(){
 

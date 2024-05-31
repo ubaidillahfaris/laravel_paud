@@ -22,13 +22,5 @@
     <body class="font-sans antialiased">
         @inertia
     </body>
-    <script src="/libs/jquery/dist/jquery.min.js"></script>
-    <script src="/libs/simplebar/dist/simplebar.min.js"></script>
-    <script src="/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!--  core files -->
-    <script src="/js/app.min.js"></script>
-    <script src="/js/app.init.js"></script>
-    <script src="/js/app-style-switcher.js"></script>
-    <script src="/js/sidebarmenu.js"></script>
-    <script src="/js/custom.js"></script>
+    
 </html>

@@ -144,13 +144,15 @@
                    </a>
                </li>
                <li class="sidebar-item">
-                   <a class="sidebar-link has-arrow" href="#" aria-expanded="false">
-                   <span class="d-flex">
-                       <i class="ti ti-chart-donut-3"></i>
-                   </span>
-                   <span class="hide-menu">Blog</span>
-                   </a>
-                   <ul aria-expanded="false" class="collapse first-level">
+                   <div class="sidebar-link has-arrow" :class="{
+                    'active' : isExpanded
+                   }" @click="toggle" :aria-expanded="isExpanded">
+                        <span class="d-flex">
+                            <i class="ti ti-chart-donut-3"></i>
+                        </span>
+                        <span class="hide-menu">Blog</span>
+                    </div>
+                   <ul :class="{ 'collapse': !isExpanded, 'in' : isExpanded, 'first-level': true }" :aria-expanded="isExpanded">
                    <li class="sidebar-item">
                        <a href="./blog-posts.html" class="sidebar-link">
                        <div class="round-16 d-flex align-items-center justify-content-center">
@@ -1543,6 +1545,17 @@ import { Link } from '@inertiajs/vue3';
 export default {
    components:{
        ApplicationLogo, Link
-   }
+   },
+   data() {
+        return {
+            isExpanded: false
+        };
+    },
+    methods: {
+        toggle(event) {
+            event.preventDefault();
+            this.isExpanded = !this.isExpanded;
+        }
+    }
 }
 </script>

@@ -1,6 +1,15 @@
 import './bootstrap';
 import '../css/style.min.css';
 import "vue-select/dist/vue-select.css";
+import "./libs/jquery/dist/jquery.min.js";
+import "./libs/simplebar/dist/simplebar.min.js";
+// import "./libs/bootstrap/dist/js/bootstrap.bundle.min.js";
+import "./Moderenize/app.min.js";
+import "./Moderenize/app.init.js";
+import "./Moderenize/sidebarmenu.js";
+import "./Moderenize/app-style-switcher.js";
+// import "./Moderenize/custom.js";
+
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
