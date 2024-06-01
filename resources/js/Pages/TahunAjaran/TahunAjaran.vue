@@ -68,16 +68,25 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <button @click="postData()" class="btn btn-primary">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M12 21a9 9 0 1 0 0-18a9 9 0 0 0 0 18m-.232-5.36l5-6l-1.536-1.28l-4.3 5.159l-2.225-2.226l-1.414 1.414l3 3l.774.774z" clip-rule="evenodd"/></svg>
-                                Simpan
-                            </button>
+                            <template v-if="state == 'create'">
+                                <button @click="postData()" class="btn btn-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M12 21a9 9 0 1 0 0-18a9 9 0 0 0 0 18m-.232-5.36l5-6l-1.536-1.28l-4.3 5.159l-2.225-2.226l-1.414 1.414l3 3l.774.774z" clip-rule="evenodd"/></svg>
+                                    Simpan
+                                </button>
+                            </template>
+                            <template v-else>
+                                <button @click="updateData()" class="btn btn-secondary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1l1-4Z"/></g></svg>
+                                    Perbarui
+                                </button>
+                            </template>
+                            
                         </div>
                     </div>
             </div>
 
             <!-- Component daftar tahun ajaran -->
-            <DataListTahunAjaran ref="DataListComponent"></DataListTahunAjaran>
+            <DataListTahunAjaran ref="DataListComponent" @on-update="onUpdateDataHandler"></DataListTahunAjaran>
             
         </div>
     </AuthenticatedLayout>
@@ -90,6 +99,7 @@ import {Link, useForm} from '@inertiajs/vue3';
 import axios from 'axios';
 import Toast from '@/Toast.js'
 import DataListTahunAjaran from '@/Pages/TahunAjaran/DataList.vue'
+import moment from 'moment';
 
 export default {
     components:{
@@ -97,8 +107,10 @@ export default {
     },
     data() {
         return {
+            state:'create',
             kota:[],
             refreshData:false,
+            updatedDataId:null,
             form:useForm({
                 start_tahun : null,
                 end_tahun : null,
@@ -127,11 +139,15 @@ export default {
         async postData(){
             try {
                 let request = await axios.post(route('tahun_ajaran.create'),this.form);
+                
+                this.resetPageHandler();
+
                 Toast.fire({
                     'icon':'success',
                     'title' : 'Berhasil menambahkan tahun ajaran'
                 });
-                this.$refs.DataListComponent.fetchData()
+
+                
             } catch (error) {
                 console.log(error)
                 Toast.fire({
@@ -140,7 +156,60 @@ export default {
                 })
             }
 
+        },
+        async updateData(){
+            try {
+                let request = await axios.put(route('tahun_ajaran.update',{id:this.updatedDataId}),this.form);
+                
+
+                Toast.fire({
+                    'icon':'success',
+                    'title' : 'Berhasil memperbarui data tahun ajaran'
+                });
+
+                this.resetPageHandler();
+                console.log(this.form)
+            } catch (error) {
+                console.log(error)
+                Toast.fire({
+                    'icon':'error',
+                    'title' : 'Gagal memperbarui data tahun ajaran'
+                })
+            }
+        },
+        async onUpdateDataHandler(item){
+            let tahunList = item.tahun_ajaran.split('/');
+            let selectKota = this.kota.filter((itemKota) => {
+                if (itemKota.label == item.tempat_pembagian_raport.toUpperCase()) {
+                    return itemKota
+                }
+            });
+            
+            let itemDataMap = useForm({
+                'start_tahun' : tahunList[0],
+                'end_tahun' : tahunList[1],
+                'semester' : item.semester.toLowerCase(),
+                'id_kota_pembagian_raport' : selectKota[0],
+                'tanggal_pembagian_raport' :moment( item.tanggal_pembagian_raport).format('yyyy-MM-D')
+            })
+
+            this.updatedDataId  = item.id
+            this.form = itemDataMap
+            this.state = 'update'
+            window.scrollTo(0,0);
+        },
+        resetPageHandler(){
+            this.form = useForm({
+                start_tahun : null,
+                end_tahun : null,
+                semester : null,
+                id_kota_pembagian_raport : null,
+                tanggal_pembagian_raport : null
+            });
+            this.$refs.DataListComponent.fetchData()
+            this.state = 'create'
         }
+        
     },
 }
 </script>

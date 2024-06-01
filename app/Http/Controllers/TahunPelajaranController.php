@@ -103,6 +103,33 @@ class TahunPelajaranController extends Controller
         ->json($tahunAjaran);
     }
 
+    public function update(Request $request, $id){
+        try {
+            $data = array_filter($request->all());
+
+            TahunPelajaran::where('id',$id)
+            ->update([
+                'start_tahun' => $data['start_tahun'],
+                'end_tahun' => $data['end_tahun'],
+                'semester' => $data['semester'],
+                'id_kota_pembagian_raport' => $data['id_kota_pembagian_raport']['code'],
+                'tanggal_pembagian_raport' => $data['tanggal_pembagian_raport'],
+            ]);
+
+            return response()
+            ->json([
+                'message' => 'Berhasil memperbarui data tahun ajaran',
+            ]);
+
+        } catch (\Throwable $th) {
+            return response()
+            ->json([
+                'message' => 'Gagal memperbarui data tahun ajaran',
+                'description' => $th->getMessage()
+            ],500);
+        }
+    }
+
     public function updateStatus(Request $request, $id){
         try {
 
@@ -124,6 +151,8 @@ class TahunPelajaranController extends Controller
             ],500);
         }
     }
+
+
 
     public function delete($id){
         try {

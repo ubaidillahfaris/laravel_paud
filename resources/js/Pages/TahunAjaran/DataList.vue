@@ -63,8 +63,10 @@
                             <option :value="false" :selected="item.status == 'Tidak Aktif'">Tidak Aktif</option>
                         </select>
                     </td>
-                    <td>
-                        <button @click="onDeleteHandler(item.id)" class="btn btn-rounded btn-outline-danger">Hapus</button>
+                    <td class="row">
+                        <button @click="onDeleteHandler(item.id)" class="btn btn-rounded btn-outline-danger col">Hapus</button>
+                        <div style="width: 1%;"></div>
+                        <button @click="onEditDataHandler(item)" class="btn btn-rounded btn-outline-primary col">Edit</button>
                     </td>
                     </tr>
                 </tbody>
@@ -238,6 +240,15 @@ export default {
             } catch (error) {
                 throw error
             }
+        },
+        onEditDataHandler(item){
+            this.$emit('on-update',{
+                'id' : item.id,
+                'tahun_ajaran' : item.tahun_ajaran,
+                'semester' : item.semester,
+                'tempat_pembagian_raport' : item.tempat_pembagian_raport,
+                'tanggal_pembagian_raport' : item.tanggal_pembagian_raport
+            })
         }
     },
 }
