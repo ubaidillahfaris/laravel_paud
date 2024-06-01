@@ -21,7 +21,7 @@ class TahunPelajaranController extends Controller
             $request->validate([
                 'start_tahun' => ['required','integer'],
                 'end_tahun' => ['required','integer'],
-                'semester' => ['required','in:ganjil, genap'],
+                'semester' => ['required','in:ganjil,genap'],
                 'id_kota_pembagian_raport' => ['required'],
                 'tanggal_pembagian_raport' => ['required','date']
             ]);
@@ -120,6 +120,23 @@ class TahunPelajaranController extends Controller
             return response()
             ->json([
                 'message' => 'Gagal mengubah status tahun ajaran',
+                'description' => $th->getMessage()
+            ],500);
+        }
+    }
+
+    public function delete($id){
+        try {
+            TahunPelajaran::where('id',$id)
+            ->delete();
+            return response()
+            ->json([
+                'message' => 'Berhasil menghapus data',
+            ]);
+        } catch (\Throwable $th) {
+            return response()
+            ->json([
+                'message' => 'Gagal menghapus data',
                 'description' => $th->getMessage()
             ],500);
         }

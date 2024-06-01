@@ -21,7 +21,7 @@
         
         
         <!-- tabel -->
-            <div class="table-responsive">
+            <div class="overflow-auto">
                 <table class="table align-middle text-nowrap mb-0">
                 <thead>
                     <tr class="text-muted fw-semibold">
@@ -64,7 +64,7 @@
                         </select>
                     </td>
                     <td>
-                        
+                        <button @click="onDeleteHandler(item.id)" class="btn btn-rounded btn-outline-danger">Hapus</button>
                     </td>
                     </tr>
                 </tbody>
@@ -97,6 +97,7 @@ export default {
     },
     beforeMount() {
         this.fetchData();
+        console.log(this.onRefresh);
     },
     computed: {
         lengthData(){
@@ -201,6 +202,42 @@ export default {
         },
         onSelectPageHandler(url){
             this.fetchData(url)
+        },
+        async onDeleteHandler(id){
+            try {
+                Swal.fire({
+                    title: "Ingin menghapus status Tahun Ajaran?",
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Ya, hapus sekarang!"
+                    }).then(async (result) => {
+                        if (result.isConfirmed) {
+                            this.deleteDataHandler(id).then((result) => {
+                                Toast.fire({
+                                    'icon':'success',
+                                    'title' : 'Berhasil menghapus data'
+                                })
+                                this.fetchData()
+                            });
+
+                        }
+                    });
+            } catch (error) {
+                Toast.fire({
+                    'icon':'error',
+                    'title' : 'Gagal menghapus data'
+                })
+            }
+        },
+        async deleteDataHandler(id){
+            try {
+                await axios.delete(route('tahun_ajaran.delete',{'id':id}));
+            } catch (error) {
+                throw error
+            }
         }
     },
 }

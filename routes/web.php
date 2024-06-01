@@ -102,6 +102,7 @@ Route::middleware('auth')
             Route::post('create','create')->name('create');
             Route::get('show','show')->name('show');
             Route::put('update_status/{id}','updateStatus')->name('update_status');
+            Route::delete('delete/{id}','delete')->name('delete');
         });
 
         Route::prefix('ppdb')

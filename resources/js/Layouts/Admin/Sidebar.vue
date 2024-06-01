@@ -24,54 +24,50 @@
                <!-- =================== -->
                <!-- Dashboard -->
                <!-- =================== -->
-               <li class="sidebar-item">
-                   <Link class="sidebar-link" :href="route('dashboard.admin')" aria-expanded="false">
-                       <span>
-                           <i class="ti ti-aperture"></i>
-                       </span>
-                       <span class="hide-menu">Dashboard</span>
-                   </Link>
+
+               <li class="sidebar-item" v-for="(item, index) in routeList" :key="index">
+                    <template v-if="(item.child != null)">
+                            <!-- menu parent -->
+                            <div class="sidebar-link has-arrow"
+                            @click="()=>{
+                                    item.status = !item.status
+                                }"
+                            :class="{
+                                'active' : item.status == true
+                            }">
+                                    <span v-html="item.icon"></span>
+                                    <span class="hide-menu">{{ item.label }}</span>
+                            </div>
+                            <!-- end menu parent -->
+
+
+                            <ul :class="{ 
+                                'collapse': item.status == false, 
+                                'in' : item.status == true, 
+                                'first-level': true 
+                            }" :aria-expanded="item.expanded == true">
+                                <li class="sidebar-item" v-for="(itemChild, index) in item.child">
+                                    <Link class="sidebar-link" :class="{
+                                        'active' : itemChild.status == true
+                                    }" :href="itemChild.route" aria-expanded="false">
+                                        <span v-html="itemChild.icon"></span>
+                                        <span class="hide-menu">{{itemChild.label}}</span>
+                                    </Link>
+                                </li>
+                            </ul>
+                    </template>
+                    <template v-else>
+                        <Link class="sidebar-link" :class="{
+                            'active' : item.status == true
+                        }" :href="item.route" aria-expanded="false">
+                            <span v-html="item.icon"></span>
+                            <span class="hide-menu">{{item.label}}</span>
+                        </Link>
+                    </template>
                </li>
-               <li class="sidebar-item">
-                   <Link class="sidebar-link" :href="route('ppdb.index')" aria-expanded="false">
-                   <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill="currentColor" d="M6 3a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h3.6a5.5 5.5 0 0 1-.393-1H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3.207q.524.149 1 .393V6a3 3 0 0 0-3-3zm3.5 7h1.837c.895-.63 1.986-1 3.163-1h-5a.5.5 0 0 0 0 1m-4-5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm1 6a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3m0-1a.5.5 0 1 1 0-1a.5.5 0 0 1 0 1m0 5a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3m0-2a.5.5 0 1 1 0 1a.5.5 0 0 1 0-1M19 14.5a4.5 4.5 0 1 1-9 0a4.5 4.5 0 0 1 9 0m-4-2a.5.5 0 0 0-1 0V14h-1.5a.5.5 0 0 0 0 1H14v1.5a.5.5 0 0 0 1 0V15h1.5a.5.5 0 0 0 0-1H15z"/></svg>
-                   </span>
-                   <span class="hide-menu">PPDB</span>
-                   </Link>
-               </li>
-               <li class="sidebar-item">
-                   <a class="sidebar-link" href="./index3.html" aria-expanded="false">
-                   <span>
-                       <i class="ti ti-currency-dollar"></i>
-                   </span>
-                   <span class="hide-menu">NFT</span>
-                   </a>
-               </li>
-               <li class="sidebar-item">
-                   <a class="sidebar-link" href="./index4.html" aria-expanded="false">
-                   <span>
-                       <i class="ti ti-cpu"></i>
-                   </span>
-                   <span class="hide-menu">Crypto</span>
-                   </a>
-               </li>
-               <li class="sidebar-item">
-                   <a class="sidebar-link" href="./index5.html" aria-expanded="false">
-                   <span>
-                       <i class="ti ti-activity-heartbeat"></i>
-                   </span>
-                   <span class="hide-menu">General</span>
-                   </a>
-               </li>
-               <li class="sidebar-item">
-                   <a class="sidebar-link" href="./index6.html" aria-expanded="false">
-                   <span>
-                       <i class="ti ti-playlist"></i>
-                   </span>
-                   <span class="hide-menu">Music</span>
-                   </a>
-               </li>
+
+
+               
                <!-- ============================= -->
                <!-- Apps -->
                <!-- ============================= -->
@@ -1548,8 +1544,39 @@ export default {
    },
    data() {
         return {
-            isExpanded: false
+            isExpanded: false,
+            routeList:[ 
+                {
+                    label : 'Dashboard',
+                    route : route('dashboard.admin'),
+                    icon : '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M20.25 10a1.25 1.25 0 1 0-2.5 0zm-14 0a1.25 1.25 0 1 0-2.5 0zm13.866 2.884a1.25 1.25 0 0 0 1.768-1.768zM12 3l.884-.884a1.25 1.25 0 0 0-1.768 0zm-9.884 8.116a1.25 1.25 0 0 0 1.768 1.768zM7 22.25h10v-2.5H7zM20.25 19v-9h-2.5v9zm-14 0v-9h-2.5v9zm15.634-7.884l-9-9l-1.768 1.768l9 9zm-10.768-9l-9 9l1.768 1.768l9-9zM17 22.25A3.25 3.25 0 0 0 20.25 19h-2.5a.75.75 0 0 1-.75.75zm-10-2.5a.75.75 0 0 1-.75-.75h-2.5A3.25 3.25 0 0 0 7 22.25z"/></svg>',
+                    status : route().current('dashboard.admin')
+                    
+                },
+                {
+                    label : 'Administrasi',
+                    icon : '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><rect width="40" height="32" x="4" y="8" rx="2"/><path d="M32 25v7m-8-16v16m-8-12v12"/></g></svg>',
+                    status : route().current('ppdb.index') || route().current('tahun_ajaran.index'),
+                    child : [ 
+                        {
+                            label : 'PPDB',
+                            route : route('ppdb.index'),
+                            status : route().current('ppdb.index'),
+                            icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill="currentColor" fill-rule="evenodd" d="M10 5a5 5 0 1 0 0 10a5 5 0 0 0 0-10m-6 5a6 6 0 1 1 12 0a6 6 0 0 1-12 0" clip-rule="evenodd"/></svg>'
+                        },
+                        {
+                            label : 'Tahun Ajaran',
+                            route : route('tahun_ajaran.index'),
+                            status : route().current('tahun_ajaran.index'),
+                            icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill="currentColor" fill-rule="evenodd" d="M10 5a5 5 0 1 0 0 10a5 5 0 0 0 0-10m-6 5a6 6 0 1 1 12 0a6 6 0 0 1-12 0" clip-rule="evenodd"/></svg>'
+                        },
+                    ]
+                }
+            ]
         };
+    },
+    mounted() {
+        console.log(this.routeList);
     },
     methods: {
         toggle(event) {

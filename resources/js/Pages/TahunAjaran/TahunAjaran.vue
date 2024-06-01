@@ -77,7 +77,7 @@
             </div>
 
             <!-- Component daftar tahun ajaran -->
-            <DataListTahunAjaran></DataListTahunAjaran>
+            <DataListTahunAjaran ref="DataListComponent"></DataListTahunAjaran>
             
         </div>
     </AuthenticatedLayout>
@@ -98,6 +98,7 @@ export default {
     data() {
         return {
             kota:[],
+            refreshData:false,
             form:useForm({
                 start_tahun : null,
                 end_tahun : null,
@@ -129,7 +130,8 @@ export default {
                 Toast.fire({
                     'icon':'success',
                     'title' : 'Berhasil menambahkan tahun ajaran'
-                })
+                });
+                this.$refs.DataListComponent.fetchData()
             } catch (error) {
                 console.log(error)
                 Toast.fire({
