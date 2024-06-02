@@ -1556,27 +1556,34 @@ export default {
                 {
                     label : 'Administrasi',
                     icon : '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><rect width="40" height="32" x="4" y="8" rx="2"/><path d="M32 25v7m-8-16v16m-8-12v12"/></g></svg>',
-                    status : route().current('ppdb.index') || route().current('tahun_ajaran.index'),
+                    status : route().current('ppdb.*') || route().current('tahun_ajaran.*'),
                     child : [ 
                         {
                             label : 'PPDB',
                             route : route('ppdb.index'),
-                            status : route().current('ppdb.index'),
+                            status : route().current('ppdb.*'),
                             icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill="currentColor" fill-rule="evenodd" d="M10 5a5 5 0 1 0 0 10a5 5 0 0 0 0-10m-6 5a6 6 0 1 1 12 0a6 6 0 0 1-12 0" clip-rule="evenodd"/></svg>'
                         },
                         {
                             label : 'Tahun Ajaran',
                             route : route('tahun_ajaran.index'),
-                            status : route().current('tahun_ajaran.index'),
+                            status : route().current('tahun_ajaran.*'),
                             icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill="currentColor" fill-rule="evenodd" d="M10 5a5 5 0 1 0 0 10a5 5 0 0 0 0-10m-6 5a6 6 0 1 1 12 0a6 6 0 0 1-12 0" clip-rule="evenodd"/></svg>'
                         },
                     ]
-                }
+                },
+                {
+                    label : 'Kelas',
+                    route : route('kelas.index'),
+                    icon : '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M17.25 2A2.75 2.75 0 0 1 20 4.75v14.5A2.75 2.75 0 0 1 17.25 22H6.75A2.75 2.75 0 0 1 4 19.249V4.75c0-1.26.846-2.32 2-2.647V3.75c-.304.228-.5.59-.5 1v14.498c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25V4.75c0-.69-.56-1.25-1.25-1.25H15V2zM14 2v8.139c0 .747-.8 1.027-1.29.764l-.082-.052l-2.126-1.285l-2.078 1.251c-.5.36-1.33.14-1.417-.558L7 10.14V2zm-1.5 1.5h-4v5.523l1.573-.949a.92.92 0 0 1 .818-.024l1.61.974z"/></svg>',
+                    status : route().current('kelas.*')
+                    
+                },
             ]
         };
     },
     mounted() {
-        console.log(this.routeList);
+        
     },
     methods: {
         toggle(event) {

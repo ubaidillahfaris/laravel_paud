@@ -4,9 +4,9 @@
             <div class="w-full card p-4">
                 <div class="d-sm-flex d-block align-items-center justify-content-between mb-9">
                        <div class="mb-3 mb-sm-0">
-                            <h5 class="card-title fw-semibold">Tahun Ajaran</h5>
+                            <h5 class="card-title fw-semibold">Form Tahun Ajaran</h5>
                             <p class="card-subtitle mb-0">
-                                Konfigurasi tahun pelajaran
+                                Konfigurasi data tahun pelajaran
                             </p>
                             <div class="py-2"></div>
                         </div>
@@ -39,13 +39,13 @@
                         <div class="col-md-6"></div>
                         <div class="col-md-6">
                             <div class="form-group mb-4">
-                                    <label class="mr-sm-2" for="inlineFormCustomSelect">Semester</label>
-                                    <select v-model="form.semester"  class="form-select mr-sm-2" id="inlineFormCustomSelect">
-                                        <option selected hidden>Pilih...</option>
-                                        <option value="ganjil">Ganjil</option>
-                                        <option value="genap">Genap</option>
-                                    </select>
-                                </div>
+                                <label class="mr-sm-2" for="inlineFormCustomSelect">Semester</label>
+                                <select v-model="form.semester"  class="form-select mr-sm-2" id="inlineFormCustomSelect">
+                                    <option selected hidden>Pilih...</option>
+                                    <option value="ganjil">Ganjil</option>
+                                    <option value="genap">Genap</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="col-md-6"></div>
                         <div class="col-md-6">
@@ -94,7 +94,6 @@
 
 <script>
 import AuthenticatedLayout from '@/Layouts/Admin/Layout.vue';
-
 import {Link, useForm} from '@inertiajs/vue3';
 import axios from 'axios';
 import Toast from '@/Toast.js'

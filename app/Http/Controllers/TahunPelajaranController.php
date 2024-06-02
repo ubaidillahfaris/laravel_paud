@@ -81,6 +81,20 @@ class TahunPelajaranController extends Controller
         }
     }
 
+    public function showAll(){
+         // mengambil data sekolah user request
+         $user = User::where('id',Auth::user()->id)
+         ->with('sekolah')
+         ->first();
+
+         $tahunAjaran = TahunPelajaran::where('sekolah_id',$user->sekolah->id)
+         ->where('is_active',true)
+        ->orderBy('id','DESC')->get();
+
+        return response()
+        ->json($tahunAjaran);
+    }
+
     public function show(Request $request){
         // parameter
         $length = $request->length??10;
@@ -98,6 +112,7 @@ class TahunPelajaranController extends Controller
             ->where('end_tahun',$tahun_ajaran[1]);
         })
         ->where('sekolah_id',$user->sekolah->id)
+        ->orderBy('id','DESC')
         ->paginate($length);
         return response()
         ->json($tahunAjaran);

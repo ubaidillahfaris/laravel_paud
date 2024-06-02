@@ -90,8 +90,12 @@ Route::middleware('auth')
         ->name('kelas.')
         ->controller(KelasController::class)
         ->group(function(){
+            Route::get('index','index')->name('index');
+            Route::get('create','create')->name('create');
+            Route::get('show','show')->name('show');
             Route::post('store','store')->name('store');
             Route::delete('delete','delete')->name('delete');
+            // Route::put()
         });
     
         Route::prefix('tahun_ajaran')
@@ -101,6 +105,7 @@ Route::middleware('auth')
             Route::get('index','index')->name('index');
             Route::post('create','create')->name('create');
             Route::get('show','show')->name('show');
+            Route::get('show_all','showAll')->name('show_all');
             Route::put('update_status/{id}','updateStatus')->name('update_status');
             Route::put('update/{id}','update')->name('update');
             Route::delete('delete/{id}','delete')->name('delete');

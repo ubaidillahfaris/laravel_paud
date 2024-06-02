@@ -147,103 +147,29 @@
            <!--  Row 3 -->
            <div class="row">
              
-               <!-- Table -->
-               <div class="col-lg-12 d-flex align-items-strech">
-               <div class="card w-100">
-                   <div class="card-body">
-                   <div class="d-sm-flex d-block align-items-center justify-content-between mb-7">
-                       <div class="mb-3 mb-sm-0">
-                       <h5 class="card-title fw-semibold">Daftar Gelombang</h5>
-                       <p class="card-subtitle mb-0"></p>
-                       </div>
-                       
-                       <div>
-                        
-                       </div>
-                   </div>
-                   <div class="table-responsive">
-                       <table class="table align-middle text-nowrap mb-0">
-                       <thead>
-                           <tr class="text-muted fw-semibold">
-                           <th scope="col" class="ps-0">Nama Gelombang</th>
-                           <th scope="col">Tanggal Awal</th>
-                           <th scope="col">Berakhir</th>
-                           <th scope="col">Jumlah Pendaftar</th>
-                           <th scope="col">Status</th>
-                           <th scope="col">Created at</th>
-                           </tr>
-                       </thead>
-                       <tbody class="border-top">
-                           <tr v-for="(item, index) in data?.data??[]" :key="index">
-                           <td class="ps-0">
-                               <div class="d-flex align-items-center">
-                               <div class="me-2 pe-1">
-                                   
-                               </div>
-                               <div>
-                                   <h6 class="fw-semibold mb-1">{{ item.nama_gelombang }}</h6>
-                                   <p class="fs-2 mb-0 text-muted">{{ item.informasi_umum }}</p>
-                               </div>
-                               </div>
-                           </td>
-                           <td>
-                               <p class="mb-0 fs-3">{{item.awal_pendaftaran}}</p>
-                           </td>
-                           <td>
-                               <p class="mb-0 fs-3">{{item.akhir_pendaftaran}}</p>
-                           </td>
-                           <td>
-                               <p class="fs-3 text-dark mb-0">{{ item.ppdb_count  }} Pendaftar</p>
-                           </td>
-                           <td>
-                               <p class="fs-3 text-dark mb-0">{{ item.is_active  }} </p>
-                           </td>
-                           <td>
-                               <p class="mb-0 fs-3">{{item.created_at}}</p>
-                           </td>
-                           </tr>
-                       </tbody>
-                       </table>
-                   </div>
-                   </div>
-               </div>
-               </div>
-           </div>
+            <!-- List data gelombang -->
+            <div class="col-lg-12 d-flex align-items-strech">
+                <DataList></DataList>
+            </div>
+            <!-- end list data gelombang -->
+                   
+        </div>
+               
    </AuthenticatedLayout>
 </template>
 
 <script>
 import AuthenticatedLayout from '@/Layouts/Admin/Layout.vue';
 import {Link} from '@inertiajs/vue3';
-import axios from 'axios';
-import moment from 'moment';
+import DataList from '@/Pages/Ppdb/DataList.vue';
+
 export default {
     components:{
-        AuthenticatedLayout,Link
+        AuthenticatedLayout,Link,DataList
     },
-    data() {
-        return {
-            data:null
-        }
-    },
-    mounted() {
-        this.getDataPpdb()
-    },
-    methods: {
-        async getDataPpdb(){
-           const request =  await axios.get(route('ppdb.master.show'))
-           var response = request.data;
-           const tempData = response?.data.map((item) => {
-                item.awal_pendaftaran = moment(item.awal_pendaftaran).format('ll')
-                item.akhir_pendaftaran = moment(item.akhir_pendaftaran).format('ll')
-                item.created_at = moment(item.created_at).format('ll')
-                item.is_active = item.is_active == true ? 'Aktif' : 'Tidak aktif';
-            return item
-           })
-
-           response.data = tempData
-           this.data = response
-        }
-    },
+   
+   
+   
+   
 }
 </script>
