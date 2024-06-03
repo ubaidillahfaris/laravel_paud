@@ -21,6 +21,35 @@ class KelasController extends Controller
         return Inertia::render('Kelas/Create');
     }
 
+    public function edit(int $id){
+        $kelas = Kelas::find($id);
+        return Inertia::render('Kelas/Edit',[
+            'kelas' => $kelas
+        ]);
+    }
+
+    public function update(Request $request, $id){
+        try {
+            Kelas::where('id',$id)
+            ->update(array_filter([
+                'nama' => $request->nama,
+                'tahun_pelajaran_id' => $request->tahun_pelajaran_id,
+                'sekolah_id' => $request->sekolah_id,
+            ]));
+
+            return response()
+            ->json([
+                'message' => 'Berhasil mengubah data kelas'
+            ]);
+        } catch (\Throwable $th) {
+            return response()
+            ->json([
+                'message' => 'Gagal mengubah data kelas',
+                'description' => $th->getMessage()
+            ],500);
+        }
+    }
+
     public function show(Request $request){
         $length = $request->length??10;
         $search = $request->search??null;
@@ -38,6 +67,7 @@ class KelasController extends Controller
         ->when($search != null,function($sub) use($search){
             $sub->where('nama','ILIKE',"%$search%");
         })
+        ->orderBy('created_at','DESC')
         ->paginate($length);
 
         return response()

@@ -91,11 +91,12 @@ Route::middleware('auth')
         ->controller(KelasController::class)
         ->group(function(){
             Route::get('index','index')->name('index');
+            Route::get('edit/{id}','edit')->name('edit');
+            Route::put('update/{id}','update')->name('update');
             Route::get('create','create')->name('create');
             Route::get('show','show')->name('show');
             Route::post('store','store')->name('store');
-            Route::delete('delete','delete')->name('delete');
-            // Route::put()
+            Route::delete('delete/{id}','delete')->name('delete');
         });
     
         Route::prefix('tahun_ajaran')

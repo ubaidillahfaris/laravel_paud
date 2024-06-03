@@ -47,12 +47,12 @@
                         <td>
                             <div class="row"> 
                                 <div class="col-auto px-2">
-                                    <button class="btn btn-rounded btn-outline-primary">
+                                    <Link :href="route('kelas.edit',{id:item.id})" class="btn btn-rounded btn-outline-primary">
                                         Edit
-                                    </button>
+                                    </Link>
                                 </div>
                                 <div class="col-auto px-2">
-                                    <button class="btn btn-rounded btn-outline-danger">
+                                    <button @click="onDeleteHandler(item.id)" class="btn btn-rounded btn-outline-danger">
                                         Hapus
                                     </button>
                                 </div>
@@ -73,12 +73,14 @@
 
 <script>
 import FilterTabel from '@/Pages/Kelas/FilterTabel.vue';
+import { Link } from '@inertiajs/vue3';
 import axios from 'axios';
 import StringManipulation from '@/StringManipulation.js'
 import Pagination from '@/Components/Pagination.vue';
+import Toast from '@/Toast.js'
 export default {
     components:{
-        FilterTabel, Pagination
+        FilterTabel, Pagination, Link
     },
     data() {
         return {
@@ -131,6 +133,24 @@ export default {
                 this.links = response.links
             } catch (error) {
                 console.log(error)
+            }
+        },
+        async onDeleteHandler(id){
+            try {
+                let request = await axios.delete(route('kelas.delete',{id:id}));
+                if (request.status == 200) {
+                    let response = request.data;
+                    Toast.fire({
+                        'icon':'success',
+                        'title' : 'Berhasil menghapus data kelas'
+                    })
+                    this.fetchDataKelas()
+                }
+            } catch (error) {
+                Toast.fire({
+                    'icon':'error',
+                    'title' : 'Gagal menghapus data kelas'
+                })
             }
         }
     },
