@@ -25,7 +25,7 @@
                     <div class="row justify-content-end">
                         <span class="w-25">
                             <div class="form-group mb-4">
-                                <select  class="form-select mr-sm-2" id="inlineFormCustomSelect">
+                                <select v-model="status" class="form-select mr-sm-2" id="inlineFormCustomSelect">
                                     <option selected hidden>Status</option>
                                     <option :value="null">Semua</option>
                                     <option :value="true">Aktif</option>
@@ -39,6 +39,7 @@
                             class="form-control"
                             id="tb-fname"
                             placeholder="Search..."
+                            v-model="search"
                             />
                         </div>
                     </div>
@@ -61,7 +62,7 @@
                     </tr>
                 </thead>
                 <tbody class="border-top">
-                    <tr v-for="(item, index) in data?.data??[]" :key="index">
+                    <tr v-for="(item, index) in data??[]" :key="index">
                     <td class="ps-0">
                         <div class="d-flex align-items-center">
                         <div class="me-2 pe-1">
@@ -100,6 +101,12 @@
                 </table>
             </div>
         </div>
+        <!-- end table -->
+        <!-- pagination -->
+        <Pagination class="mt-3" 
+        :linksData="links" @on-click="(value) => {
+            fetchDataKelas(value)
+        }"></Pagination>
     </div>
 </div>
 
@@ -108,11 +115,19 @@
 <script>
 import axios from 'axios';
 import moment from 'moment';
+import Pagination from '@/Components/Pagination.vue';
+
 export default {
+    components:{
+        Pagination
+    },
     data() {
         return {
             selectedLength: 10,
-            data:null
+            data:null,
+            links:[],
+            search:null,
+            status:null
         }
     },
     mounted() {
@@ -120,6 +135,12 @@ export default {
     },
     watch: {
         selectedLength(){
+            this.getDataPpdb()
+        },
+        search(){
+            this.getDataPpdb()
+        },
+        status(){
             this.getDataPpdb()
         }
     },
@@ -139,14 +160,21 @@ export default {
         }
     },
     methods: {
-        async getDataPpdb(){
-           const request =  await axios.get(
-            route('ppdb.master.show',{
-                _query:{
-                    length:this.selectedLength
-                }
-            })
-            )
+        async getDataPpdb(urlParam){
+
+            let url;
+
+            if (urlParam == null) {
+                url = route('ppdb.master.show',{
+                    _query:{
+                        length:this.selectedLength,
+                        search:this.search,
+                        status:this.status
+                    }
+                })
+            }
+
+           const request =  await axios.get(url)
            var response = request.data;
            const tempData = response?.data.map((item) => {
                 item.awal_pendaftaran = moment(item.awal_pendaftaran).format('ll')
@@ -156,8 +184,8 @@ export default {
             return item
            })
 
-           response.data = tempData
-           this.data = response
+           this.data = response.data;
+           this.links = response.links;
         }
     },
 }

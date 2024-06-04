@@ -13,11 +13,24 @@ class PpdbMasterController extends Controller
 {
 
     public function show(Request $request, UserController $userController){
+        $search = $request->search??null;
+        $length = $request->length??10;
+        $status = $request->status??null;
+
+        // get data user
         $user = $userController->adminWithSekolah(Auth::user()->id);
+
+
         $ppdbMaster = PpdbMaster::where('sekolah_id',$user->sekolah->id)
+        ->when($search,function($sub) use($search){
+            $sub->whereAny(['nama_gelombang','informasi_umum'],'ILIKE',"%$search%");
+        })
+        ->when($status, function($sub) use($status){
+            $sub->where('is_active',$status);
+        })
         ->withCount('ppdb')
         ->orderBy('id','DESC')
-        ->paginate(10);
+        ->paginate($length);
 
         return response()
         ->json($ppdbMaster);
