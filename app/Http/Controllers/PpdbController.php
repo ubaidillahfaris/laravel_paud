@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Anak;
 use App\Models\Ppdb;
+use App\Models\TahunPelajaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +24,38 @@ class PpdbController extends Controller
         return Inertia::render('Ppdb/Create');
     }
 
+    public function validasi(int $gelombang_id){
+        return Inertia::render('PpdbValidasi/PpdbValidasi',[
+            'gelombang_id' => $gelombang_id
+        ]);
+    }
+
+    public function dataSiswa(Request $request, int $gelombangId){
+        $length = $request->length??10;
+        $search = $request->search??null;
+
+        // get pendaftar by gelombang id
+        $pendaftar = Ppdb::where('ppdb_master_id',$gelombangId)
+        ->when($search, function($sub) use($search){
+            $sub->whereAny([
+                'nama_lengkap',
+                'nama_panggilan',
+                'nik',
+                'nama_ayah',
+                'no_hp_ayah',
+                'nama_ibu',
+                'no_hp_ibu',
+                'alamat',
+            ],'ILIKE',"%$search%");
+        })
+        ->orderBy('nama_lengkap','ASC')
+        ->paginate($length);
+
+        return response()
+        ->json($pendaftar);
+    }
+
+
     public function createGroup(Request $request){
         try {
             //code...
@@ -34,12 +67,10 @@ class PpdbController extends Controller
     public function store(Request $request, AnakController $anakController){
         
         $path = '';
-        Log::info($request->all());
-
         DB::beginTransaction();
         try {
-            if ($request->hasFile('foto')) {
-                $path = $this->moveImage($request->file('foto'));
+            if ($request->hasFile('file')) {
+                $path = $this->moveImage($request->file('file'));
             }
 
             $data = $request->validate([
@@ -92,7 +123,11 @@ class PpdbController extends Controller
             return response()
             ->json([
                 'message' => 'Berhasil mendaftar ppdb',
-                'id' => $ppdb->id
+                'data' => [
+                    'ppdb_master_id' => intVal($request->ppdb_master_id),
+                    'ortu_id' => intVal($data['ortu_user_id']),
+                    'ppdb_id' => intVal($ppdb->id),
+                ]
             ]);
         }
         catch (ValidationException $th){
@@ -193,5 +228,60 @@ class PpdbController extends Controller
         if (Storage::exists($path)) {
             Storage::delete($path);
         } 
+    }
+
+    public function detailPendaftar(int $ppdb_id){
+        // mendapatkan data ppdb
+        $ppdb = Ppdb::with('kota_lahir','sekolah')->find($ppdb_id);
+
+
+        // cek tahun ajaran aktif dan get kelas
+        $tahunAjaran = TahunPelajaran::with('kelas')->where('sekolah_id',$ppdb->sekolah->id)
+        ->first();
+
+        $kelas = [];
+        if (count($tahunAjaran->kelas) > 0) {
+            $kelas = $tahunAjaran->kelas;
+        }
+        
+        return Inertia::render('PpdbValidasi/DetailDanValidasi',[
+            'data_ppdb' => $ppdb,
+            'kelas' => $kelas
+        ]);
+    }
+
+    public function validasiSiswa(Request $request, int $ppdb_id){
+        try {
+            
+            $request->validate([
+                'kelas_id' => 'nullable',
+                'status' => 'required'
+            ]);
+
+            if ($request->status == 'not verified' &&  $request->kelas_id == null) {
+                return response()
+                ->json([
+                    'message' => 'Isi data kelas',
+                ],400);
+            }
+
+
+            Ppdb::where('id',$ppdb_id)
+            ->update(array_filter([
+                'kelas_id' => $request->kelas_id,
+                'status' => $request->status
+            ]));
+
+            return response()
+            ->json([
+                'message' => 'Berhasil memvalidasi calon pendaftar',
+            ]);
+        } catch (\Throwable $th) {
+            return response()
+            ->json([
+                'messsage' => 'Gagal memvalidasi calon pendaftar',
+                'description' => $th->getMessage()
+            ],500);
+        }
     }
 }

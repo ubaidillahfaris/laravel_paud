@@ -49,7 +49,6 @@
 
         <!-- table -->
         <div class="overflow-auto">
-            <div class="table-responsive">
                 <table class="table align-middle text-nowrap mb-0">
                 <thead>
                     <tr class="text-muted fw-semibold">
@@ -75,13 +74,17 @@
                         </div>
                     </td>
                     <td>
-                        <p class="mb-0 fs-3">{{item.awal_pendaftaran}}</p>
+                        <p class="mb-0 fs-3">
+                            {{item.awal_pendaftaran}} 
+                        </p>
                     </td>
                     <td>
                         <p class="mb-0 fs-3">{{item.akhir_pendaftaran}}</p>
                     </td>
                     <td>
-                        <p class="fs-3 text-dark mb-0">{{ item.ppdb_count  }} Pendaftar</p>
+                        <p class="fs-3 text-dark mb-0">
+                            {{ item.ppdb_count  }} Pendaftar
+                        </p>
                     </td>
                     <td>
                         <p class="fs-3 text-dark mb-0">
@@ -96,10 +99,14 @@
                     <td>
                         <p class="mb-0 fs-3">{{item.created_at}}</p>
                     </td>
+                    <td>
+                        <Link :href="route('ppdb.validasi',{ppdb_id: item.id})" class="btn btn-outline-info">
+                            Validasi Siswa
+                        </Link>
+                    </td>
                     </tr>
                 </tbody>
                 </table>
-            </div>
         </div>
         <!-- end table -->
         <!-- pagination -->
@@ -116,10 +123,11 @@
 import axios from 'axios';
 import moment from 'moment';
 import Pagination from '@/Components/Pagination.vue';
+import { Link } from '@inertiajs/vue3';
 
 export default {
     components:{
-        Pagination
+        Pagination,Link
     },
     data() {
         return {

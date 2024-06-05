@@ -23,7 +23,8 @@ class PpdbMasterController extends Controller
 
         $ppdbMaster = PpdbMaster::where('sekolah_id',$user->sekolah->id)
         ->when($search,function($sub) use($search){
-            $sub->whereAny(['nama_gelombang','informasi_umum'],'ILIKE',"%$search%");
+            $sub->whereAny(['nama_gelombang','informasi_umum'],'ILIKE',"%$search%")
+            ->orWhereYear('awal_pendaftaran',intVal($search));
         })
         ->when($status, function($sub) use($status){
             $sub->where('is_active',$status);

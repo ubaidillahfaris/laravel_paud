@@ -7,6 +7,7 @@ use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\PpdbMasterController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\SurveyAsesmenController;
+use App\Http\Controllers\SurveyAsesmenJawabanController;
 use App\Http\Controllers\WilayahController;
 use App\Models\SurveyAsesmen;
 use Illuminate\Support\Facades\Route;
@@ -49,11 +50,12 @@ Route::middleware('auth:sanctum')->group(function () {
       
       
             Route::prefix('ppdb_asesmen')
-            ->controller(SurveyAsesmenController::class)
+        
             ->group(function(){
-                Route::get('data/{ppdb_master}','showAsesmenFromPpdbMaster');
+                Route::get('data/{ppdb_master}',[SurveyAsesmenController::class,'showAsesmenFromPpdbMaster']);
+                Route::post('create',[SurveyAsesmenJawabanController::class,'store']);
             });
-
+            
             
         });
 

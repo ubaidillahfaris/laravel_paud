@@ -123,6 +123,10 @@ Route::middleware('auth')
                 Route::post('create_group','createGroup')->name('create_group');
                 Route::post('store','store')->name('store');
                 Route::get('show','show')->name('show');
+                Route::get('validasi/{gelombang_id}','validasi')->name('validasi');
+                Route::get('data_siswa/{gelombang_id}','dataSiswa')->name('data_siswa');
+                Route::get('detail_pendaftar/{ppdb_id}','detailPendaftar')->name('detailPendaftar');
+                Route::put('validasi/{ppdb_id}','validasiSiswa')->name('validasi');
             });
 
             Route::prefix('master')

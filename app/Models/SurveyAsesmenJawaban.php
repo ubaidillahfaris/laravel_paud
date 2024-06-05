@@ -10,5 +10,12 @@ class SurveyAsesmenJawaban extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['ppdb_master_id','ortu_id','anak_id','data'];
+    protected $fillable = [
+        'ppdb_master_id',
+        'ortu_id',
+        'ppdb_id',
+        'data',
+        'tinggi_badan',
+        'berat_badan'
+    ];
 }

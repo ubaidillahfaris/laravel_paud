@@ -17,4 +17,8 @@ class TahunPelajaran extends Model
     public function kota_pembagian(){
         return $this->hasOne(Kota::class,'id','id_kota_pembagian_raport');
     }
+
+    public function kelas(){
+        return $this->hasMany(Kelas::class,'tahun_pelajaran_id','id');
+    }
 }
