@@ -41,7 +41,7 @@
                         </td>
                         <td>
                             <p class="mb-0 fs-3">
-                                {{ item.total_siswa }}
+                                {{ item.total_siswa }} Siswa
                             </p>
                         </td>
                         <td>
@@ -127,7 +127,7 @@ export default {
                         nama: item.nama,
                         tahun_ajaran : `${item.tahun_ajaran?.start_tahun??''}/${item.tahun_ajaran?.end_tahun??''}`,
                         semester: item.tahun_ajaran?.semester ? new StringManipulation().capitalizeLetter(item.tahun_ajaran.semester): '',
-                        total_siswa: item.total_siswa??0,
+                        total_siswa: item.siswa_count??0,
                     }
                 });
                 this.links = response.links

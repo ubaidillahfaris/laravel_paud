@@ -60,7 +60,8 @@ class KelasController extends Controller
 
         // mengambil data kelas
         $kelas = Kelas::where('sekolah_id',$user->sekolah->id)
-        ->with('tahun_ajaran')
+        ->with('tahun_ajaran', 'siswa')
+        ->withCount('siswa')
         ->whereHas('tahun_ajaran',function($sub){
             $sub->where('is_active',true);
         })

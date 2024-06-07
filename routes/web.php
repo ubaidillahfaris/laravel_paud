@@ -7,11 +7,11 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\PpdbMasterController;
+use App\Http\Controllers\ProgramLayananController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\TahunPelajaranController;
 use App\Http\Controllers\WilayahController;
 use App\Http\Middleware\AdminMiddleware;
-use App\Models\PpdbMaster;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -110,6 +110,18 @@ Route::middleware('auth')
             Route::put('update_status/{id}','updateStatus')->name('update_status');
             Route::put('update/{id}','update')->name('update');
             Route::delete('delete/{id}','delete')->name('delete');
+        });
+
+        Route::name('program_layanan.')
+        ->prefix('program_layanan')
+        ->controller(ProgramLayananController::class)
+        ->group(function(){
+            Route::get('index','index')->name('index');
+            Route::get('data','data')->name('data');
+            Route::post('store','store')->name('store');
+            Route::get('show/{id}','show')->name('show');
+            Route::put('update/{id}','update')->name('update');
+            Route::delete('delete/{id}','destroy')->name('delete');
         });
 
         Route::prefix('ppdb')

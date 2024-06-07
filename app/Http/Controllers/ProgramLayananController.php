@@ -1,0 +1,151 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\ProgramLayanan;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+
+class ProgramLayananController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        return Inertia::render('ProgramLayanan/Index');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * show data as json
+     */
+    public function data(Request $request){
+        $length = $request->length??10;
+        $search = $request->search??null;
+
+        $programLayanan = ProgramLayanan::when($search, function($sub) use($search){
+            $sub->where('name','ILIKE',"%$search%");
+        })
+        ->paginate($length);
+
+        return response()
+        ->json($programLayanan);
+    }
+
+
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        try {
+
+            $request->validate([
+                'name' => 'required'
+            ]);
+
+            $user = User::where('id',Auth::user()->id)
+            ->with('sekolah')
+            ->first();
+
+            ProgramLayanan::create([
+                'sekolah_id' => $user->sekolah->id,
+                'name' => $request->name
+            ]);
+
+            return response()
+            ->json([
+                'message' => 'Berhasil membuat data program layanan'
+            ]);
+        } 
+        catch (ValidationException $th){
+            return response()
+            ->json([
+                'message' => 'Gagal membuat data program layanan',
+                'detail' => $th->getMessage()
+            ],400);
+        }
+        catch (\Throwable $th) {
+            return response()
+            ->json([
+                'message' => 'Gagal membuat data program layanan',
+                'detail' => $th->getMessage()
+            ],500);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(int $id)
+    {
+        $programLayanan = ProgramLayanan::where('id',$id)->first();
+        return Inertia::render('ProgramLayanan/Detail',[
+            'program_layanan' => $programLayanan
+        ]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(ProgramLayanan $programLayanan)
+    {
+        
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, int $id)
+    {
+        try {
+            ProgramLayanan::where('id',$id)
+            ->update([
+                'name' => $request->name
+            ]);
+
+            return response()
+            ->json([
+                'message' => 'Berhasil membuat data program layanan',
+            ]);
+        } catch (\Throwable $th) {
+            return response()
+            ->json([
+                'message' => 'Gagal mengubah data program layanan',
+                'detail' => $th->getMessage()
+            ],500);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(int $id)
+    {
+        try {
+            ProgramLayanan::where('id',$id)->delete();
+            return response()
+            ->json([
+                'message' => 'Berhasil menghapus data program layanan',
+            ]);
+        } catch (\Throwable $th) {
+            return response()
+            ->json([
+                'message' => 'Gagal menghapus data program layanan',
+                'detail' => $th->getMessage()
+            ],500);
+        }
+    }
+}

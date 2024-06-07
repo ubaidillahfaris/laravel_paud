@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Anak;
 use App\Models\Ppdb;
+use App\Models\Siswa;
 use App\Models\TahunPelajaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -64,7 +65,7 @@ class PpdbController extends Controller
         }
     }
 
-    public function store(Request $request, AnakController $anakController){
+    public function store(Request $request, AnakController $anakController, SiswaController $siswaController){
         
         $path = '';
         DB::beginTransaction();
@@ -105,6 +106,7 @@ class PpdbController extends Controller
             ->where('status','verified')
             ->first();
         
+            // cek data aakah anak sudah mendaftar
             if (isset($check)) {
                 return response()
                 ->json([
@@ -112,9 +114,13 @@ class PpdbController extends Controller
                 ],400);
             }
 
+            // create data ppdb
             $ppdb = Ppdb::create(
                 $data
             );
+
+            // create data siswa
+            $createSiswa = $siswaController->store($request);
 
             $dataAnak = new Request($data);
             $anakController->store($dataAnak);
@@ -251,6 +257,8 @@ class PpdbController extends Controller
     }
 
     public function validasiSiswa(Request $request, int $ppdb_id){
+
+        DB::beginTransaction();
         try {
             
             $request->validate([
@@ -265,18 +273,30 @@ class PpdbController extends Controller
                 ],400);
             }
 
-
-            Ppdb::where('id',$ppdb_id)
-            ->update(array_filter([
+            // cek ppdb data
+            $data = Ppdb::where('id',$ppdb_id)->first();
+            // update ppdb data
+            $data->update(array_filter([
                 'kelas_id' => $request->kelas_id,
                 'status' => $request->status
             ]));
+            
+            // get siswa by nik
+            $nik = intVal($data->nik);
+            $siswa = Siswa::where('nik',$nik)
+            ->first();
 
+            $siswa->update([
+                'kelas_id' => $request->kelas_id
+            ]);
+
+            DB::commit();
             return response()
             ->json([
                 'message' => 'Berhasil memvalidasi calon pendaftar',
             ]);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()
             ->json([
                 'messsage' => 'Gagal memvalidasi calon pendaftar',
