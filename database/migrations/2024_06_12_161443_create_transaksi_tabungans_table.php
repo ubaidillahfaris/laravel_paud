@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tabungans', function (Blueprint $table) {
+        Schema::create('transaksi_tabungans', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tahun_ajaran_id');
             $table->unsignedBigInteger('siswa_id');
-            $table->decimal('nominal_masuk',15,2)->default(0);
-            $table->decimal('nominal_keluar',15,2)->default(0);
-            $table->decimal('total',15,2)->default(0);
+            $table->string('jenis');
+            $table->decimal('mutasi_masuk',15,2)->default(0);
+            $table->decimal('mutasi_keluar',15,2)->default(0);
+            $table->date('tanggal_transaksi');
+            $table->string('keterangan')->nullable();
             $table->timestamps();
-            $table->softDeletes();
             $table->foreign('tahun_ajaran_id')->on('tahun_pelajarans')->references('id')
             ->onDelete('Set Null')->onUpdate('Set Null');
             $table->foreign('siswa_id')->on('siswas')->references('id')
@@ -32,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tabungans');
+        Schema::dropIfExists('transaksi_tabungans');
     }
 };

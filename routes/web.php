@@ -9,6 +9,7 @@ use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\PpdbMasterController;
 use App\Http\Controllers\ProgramLayananController;
 use App\Http\Controllers\SekolahController;
+use App\Http\Controllers\TabunganController;
 use App\Http\Controllers\TahunPelajaranController;
 use App\Http\Controllers\WilayahController;
 use App\Http\Middleware\AdminMiddleware;
@@ -148,6 +149,16 @@ Route::middleware('auth')
                 Route::post('create','create')->name('create');
                 Route::get('data','show')->name('show');
             });
+        });
+
+
+        Route::prefix('tabungan')
+        ->name('tabungan.')
+        ->controller(TabunganController::class)
+        ->group(function(){
+            Route::post('mutasi_masuk','mutasiMasuk')->name('mutasi_masuk');
+            Route::post('mutasi_keluar','mutasiKeluar')->name('mutasi_keluar');
+            Route::put('update/{transaksi_id}','update')->name('update');
         });
     });
    
