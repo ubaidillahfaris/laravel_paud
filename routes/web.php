@@ -159,6 +159,7 @@ Route::middleware('auth')
             Route::post('mutasi_masuk','mutasiMasuk')->name('mutasi_masuk');
             Route::post('mutasi_keluar','mutasiKeluar')->name('mutasi_keluar');
             Route::put('update/{transaksi_id}','update')->name('update');
+            Route::delete('destroy/{transaksi_id}','destroy')->name('destroy');
         });
     });
    

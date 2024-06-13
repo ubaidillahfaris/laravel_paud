@@ -45,13 +45,21 @@ class TabunganTest extends TestCase
     public function test_update_mutasi(): void
     {
         $user = User::where('role','admin')->first();
-        $response = $this->actingAs($user)->put(route('tabungan.update',['transaksi_id' => 8]),[
+        $response = $this->actingAs($user)->put(route('tabungan.update',['transaksi_id' => 7]),[
             'jenis' => 'withdraw',
             // 'mutasi_masuk' => 120000,
             'mutasi_keluar' => 120000,
             'tanggal_transaksi' => date('Y-m-d'),
             'keterangan' => 'tabungan pertama'
         ]);
+
+        $response->assertStatus(200);
+    }
+    
+    public function test_destroy(): void
+    {
+        $user = User::where('role','admin')->first();
+        $response = $this->actingAs($user)->delete(route('tabungan.destroy',['transaksi_id' => 8]));
 
         $response->assertStatus(200);
     }

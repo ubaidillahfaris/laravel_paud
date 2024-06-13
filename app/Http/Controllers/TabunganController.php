@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\BelowZeroTabungan;
 use App\Models\Tabungan;
 use App\Models\TransaksiTabungan;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -183,11 +185,16 @@ class TabunganController extends Controller
 
             if (isset($tabungan)) {
                 
-                $tabungan->update([
+                $dataNominal = [
                     'nominal_masuk' => $tabungan->nominal_masuk + ($dataNominal['nominal_masuk']??0),
                     'nominal_keluar' => $tabungan->nominal_keluar + ($dataNominal['nominal_keluar']??0),
                     'total' => $tabungan->total + ($dataNominal['nominal_masuk']??0 - $dataNominal['nominal_keluar']??0)
-                ]);
+                ];
+
+                if ($dataNominal['total'] < 0) {
+                    throw new BelowZeroTabungan();
+                }
+                $tabungan->update($dataNominal);
             }else{
                 Tabungan::create(array_filter([
                     'tahun_ajaran_id' => $request->tahun_ajaran_id, 
@@ -261,6 +268,7 @@ class TabunganController extends Controller
             ],400);
         }
         catch (\Throwable $th) {
+            Log::error($th->getMessage(),[$th]);
             DB::rollBack();
             return response()
             ->json([
@@ -273,8 +281,36 @@ class TabunganController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tabungan $tabungan)
+    public function destroy(int $tabungan_id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            // delete data transaksi
+            $dataTransaksi = TransaksiTabungan::where('id',$tabungan_id)->first();
+            $tempData = clone $dataTransaksi;
+            $dataTransaksi->delete();
+
+            // mengurangi overview data
+            $diff = new Request([
+                'tahun_ajaran_id' => $tempData->tahun_ajaran_id,
+                'nominal_masuk' => 0 - $tempData->mutasi_masuk,
+                'nominal_keluar' => 0 - $tempData->mutasi_keluar
+            ]);
+            
+            $this->store($diff, $tempData->siswa_id);
+            
+            DB::commit();
+            return response()
+            ->json([
+                'message' => 'Berhasil menghapus data transaksi'
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()
+            ->json([
+                'message' => 'Gagal menghapus data transaksi',
+                'detail' => $th->getMessage()
+            ],500);
+        }
     }
 }
