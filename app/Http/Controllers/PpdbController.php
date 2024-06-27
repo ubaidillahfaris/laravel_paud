@@ -256,7 +256,7 @@ class PpdbController extends Controller
         ]);
     }
 
-    public function validasiSiswa(Request $request, int $ppdb_id){
+    public function validasiSiswa(Request $request, int $ppdb_id, RiwayatKelasController $riwayatKelasController){
 
         DB::beginTransaction();
         try {
@@ -280,15 +280,23 @@ class PpdbController extends Controller
                 'kelas_id' => $request->kelas_id,
                 'status' => $request->status
             ]));
-            
-            // get siswa by nik
-            $nik = intVal($data->nik);
-            $siswa = Siswa::where('nik',$nik)
-            ->first();
 
-            $siswa->update([
+            $data->save();
+            
+            // get siswa by nik and update
+            $nik = intVal($data->nik);
+            $siswa = tap(Siswa::with('kelas')
+            ->where('nik',$nik))
+            ->update([
                 'kelas_id' => $request->kelas_id
             ]);
+            $siswa = $siswa->first();
+
+            // set history school class
+            $riwayatKelasController->createHistory(new Request([
+                'tahun_ajaran_id' => $siswa->kelas->tahun_pelajaran_id,
+                'kelas_id' => $request->kelas_id
+            ]),$siswa->id);
 
             DB::commit();
             return response()

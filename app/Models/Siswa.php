@@ -52,4 +52,9 @@ class Siswa extends Model
         return $this->hasOne(Kota::class,'id','kota_lahir');
     }
 
+    public function tagihan(){
+        return $this->hasMany(Tagihan::class,'siswa_id','id')
+        ->where('status','send');
+    }
+
 }

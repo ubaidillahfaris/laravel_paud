@@ -8,25 +8,30 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\PpdbMasterController;
 use App\Http\Controllers\ProgramLayananController;
+use App\Http\Controllers\RiwayatKelasController;
 use App\Http\Controllers\SekolahController;
+use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TabunganController;
+use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TahunPelajaranController;
 use App\Http\Controllers\WilayahController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\Api\WaliMiddleware;
+use App\Http\Middleware\GuruMiddleware;
+use App\Models\AdminSekolah;
+use App\Models\RiwayatKelas;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
-
 
 Route::middleware('guest')
 ->group(function(){
 
     Route::get('/',function(){return redirect('login');});
-    Route::post('register',[RegisteredUserController::class,'store'])->name('register');
+    Route::post('register',[RegisteredUserController::class,'store'])->name('register_page');
     Route::get('register',function(){
         return Inertia::render('Auth/Register');
     })->name('register');
-    Route::post('login',[LoginController::class,'login'])->name('login');
+    Route::post('login',[LoginController::class,'login'])->name('login_page');
     Route::get('login',[LoginController::class,'loginPage'])->name('login');
 });
 
@@ -84,8 +89,19 @@ Route::middleware('auth')
     });
 
     
+    /**
+     * Admin route
+     */
     Route::middleware(AdminMiddleware::class)
     ->group(function(){
+
+        Route::prefix('siswa')
+        ->name('siswa.')
+        ->controller(SiswaController::class)
+        ->group(function(){
+            Route::get('show/{kelas_id}','show')->name('show');
+            Route::get('/{kelas_id}','index')->name('index');
+        });
 
         Route::prefix('kelas')
         ->name('kelas.')
@@ -113,6 +129,13 @@ Route::middleware('auth')
             Route::delete('delete/{id}','delete')->name('delete');
         });
 
+        Route::prefix('riwayat_kelas')
+        ->name('riwayat_kelas.')
+        ->controller(RiwayatKelasController::class)
+        ->group(function(){
+            
+        });
+
         Route::name('program_layanan.')
         ->prefix('program_layanan')
         ->controller(ProgramLayananController::class)
@@ -136,7 +159,7 @@ Route::middleware('auth')
                 Route::post('create_group','createGroup')->name('create_group');
                 Route::post('store','store')->name('store');
                 Route::get('show','show')->name('show');
-                Route::get('validasi/{gelombang_id}','validasi')->name('validasi');
+                Route::get('validasi/{gelombang_id}','validasi')->name('validasi_gelombang');
                 Route::get('data_siswa/{gelombang_id}','dataSiswa')->name('data_siswa');
                 Route::get('detail_pendaftar/{ppdb_id}','detailPendaftar')->name('detailPendaftar');
                 Route::put('validasi/{ppdb_id}','validasiSiswa')->name('validasi');
@@ -161,6 +184,27 @@ Route::middleware('auth')
             Route::put('update/{transaksi_id}','update')->name('update');
             Route::delete('destroy/{transaksi_id}','destroy')->name('destroy');
         });
+    });
+
+
+
+    // middleware : guru
+
+    Route::middleware(GuruMiddleware::class)
+    ->group(function(){
+        
+        Route::prefix('tagihan')
+        ->name('tagihan.')
+        ->controller(TagihanController::class)
+        ->group(function(){
+            Route::post('store','store')->name('store');
+            Route::put('bayar/{id}','bayar')->name('bayar');
+            Route::put('validasi/{id}','validasi_pembayaran')->name('validasi_pembayaran');
+            Route::delete('delete/{id}','destroy')->name('destroy');
+            Route::get('show_siswa/{siswaId}','show_by_siswa_id')->name('show_by_siswa_id');
+            Route::get('show_kelas/{kelasId}','show_by_kelas')->name('show_by_kelas');
+        });
+
     });
    
 

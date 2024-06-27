@@ -33,7 +33,8 @@ class Ppdb extends Model
         'kecamatan',
         'kelurahan',
         'alamat',
-        'ortu_user_id'
+        'ortu_user_id',
+        'status'
     ];
 
     protected $appends = ['foto_url'];

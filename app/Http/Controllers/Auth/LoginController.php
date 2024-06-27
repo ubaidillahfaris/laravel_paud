@@ -37,10 +37,6 @@ class LoginController extends Controller
                         return redirect()
                         ->route('dashboard.wali');
                     break;
-                
-                default:
-                    # code...
-                    break;
             }
         }
 

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use App\Models\RiwayatKelas;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -68,7 +70,7 @@ class KelasController extends Controller
         ->when($search != null,function($sub) use($search){
             $sub->where('nama','ILIKE',"%$search%");
         })
-        ->orderBy('created_at','DESC')
+        ->orderBy('nama','ASC')
         ->paginate($length);
 
         return response()
@@ -93,7 +95,7 @@ class KelasController extends Controller
 
             return response()
             ->json([
-                'message' => 'Berhasi; menambahkan kelas ke tahun ajaran'
+                'message' => 'Berhasil menambahkan kelas ke tahun ajaran'
             ]);
 
         } catch (\Throwable $th) {
@@ -161,5 +163,6 @@ class KelasController extends Controller
             ],500);
         }
     }
+
 
 }

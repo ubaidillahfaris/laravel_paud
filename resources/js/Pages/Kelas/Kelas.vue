@@ -24,21 +24,20 @@
                     
                     <!-- card header -->
                        <div class="mb-3 mb-sm-0">
-                            <h5 class="card-title fw-semibold">Data kelas</h5>
+                            <h5 class="card-title fw-semibold">Data siswa</h5>
                             <p class="card-subtitle mb-0">
-                                Manajemen daftar kelas
+                                Manajemen daftar siswa kelas 
                             </p>
                             <div class="py-2"></div>
                         </div>
                     </div>
-
                     
                     <!-- content -->
     
                         <!-- tabel -->
                         <DataList></DataList>
 
-                </div>
+            </div>
 
 
 

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Siswa;
 use App\Models\Tagihan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class TagihanController extends Controller
@@ -78,11 +81,134 @@ class TagihanController extends Controller
     }
 
     /**
+     * Show data tagihan by user id
+     */
+    public function show_by_siswa_id(int $siswaId){
+        $tagihan = Tagihan::find($siswaId);
+        
+        return response()
+        ->json($tagihan);
+    }
+    
+    public function show_by_kelas(int $kelasId){
+        $tagihan = Siswa::select('tagihans.*')->with('tagihan')->where('kelas_id',$kelasId)
+        ->paginate();
+
+        return response()
+        ->json($tagihan);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Tagihan $tagihan)
     {
         //
+    }
+
+
+    /**
+     * method Pembayaran tagihan
+     */
+    public function bayar(Request $request, int $id){
+        try {
+            $request->validate([
+                'nominal_terbayar'=> 'required',
+                'tanggal_bayar'=> 'required',
+                'gambar_faktur'=> 'required',
+                'tempat_bayar'=> 'nullable',
+                'teller'=> 'nullable',
+            ]);
+
+            $tagihan = Tagihan::find($id);
+            if ($tagihan->nominal != $request->nominal_terbayar) {
+                return response()
+                ->json([
+                    'message' => 'Gagal melakukan pembayaran',
+                    'detail' => 'nominal tidak sama'
+                ],400);
+            }else if(isset($tagihan->tanggal_bayar) && $tagihan->nominal_terbayar > 0){
+                return response()
+                ->json([
+                    'message' => 'Gagal melakukan pembayaran',
+                    'detail' => 'tagihan sudah terbayar'
+                ],400);
+            }
+
+            $data = array_filter($request->all());
+
+            switch (Auth::user()->role) {
+                case 'wali':
+                    $data['status'] = 'paid';
+                    break;
+                case 'guru':
+                    $data['status'] = 'validated';
+                    break;
+                default:
+                    
+                    break;
+            }
+
+            $tagihan->update($data);
+            $tagihan->save();
+    
+            return response()
+            ->json([
+                'message' => 'Berhasil melakukan pembayaran'
+            ]);
+        } 
+        catch(ValidationException $th){
+            return response()
+            ->json([
+                'message' => 'Gagal melakukan pembayaran',
+                'detail' => $th->getMessage()
+            ],400);
+        }
+        catch (\Throwable $th) {
+            return response()
+            ->json([
+                'message' => 'Gagal melakukan pembayaran',
+                'detail' => $th->getMessage()
+            ],500);
+        }
+
+    }
+
+    /**
+     * method validasi pembayaran oleh guru
+     */
+    public function validasi_pembayaran(Request $request, int $tagihanId){
+        try {
+            $request->validate([
+                'status' => [Rule::in('validated')]
+            ]);
+
+            Tagihan::where('id',$tagihanId)
+            ->where('status','paid') //tagihan yang dapat divalidasi harus berstatus paid
+            ->update([
+                'status' => $request->status
+            ]);
+
+            return response()
+            ->json([
+                'message' => 'Berhasil memvalidasi tagihan'
+            ]);
+            
+        } 
+        catch (ValidationException $th){
+            return response()
+            ->json([
+                'message' => 'Gagal memvalidasi tagihan',
+                'detail' => $th->getMessage()
+            ],400);
+        }
+        catch (\Throwable $th) {
+            return response()
+            ->json([
+                'message' => 'Gagal memvalidasi tagihan',
+                'detail' => $th->getMessage()
+            ],500);
+        }
     }
 
     /**

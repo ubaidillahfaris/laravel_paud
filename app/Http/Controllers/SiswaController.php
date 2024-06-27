@@ -2,11 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kelas;
 use App\Models\Siswa;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class SiswaController extends Controller
 {
+
+    /**
+     * show index siswa page
+     */ 
+    public function index($kelas_id){
+        return Inertia::render('Siswa/Index',[
+            'kelas_id'=>$kelas_id
+        ]);
+    }
+
+    /**
+     * show siswa data json
+     */
     public function store(Request $request){
         try {
             $data = $request->validate([
@@ -45,5 +62,22 @@ class SiswaController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    public function show(Request $request, $kelas_id){
+        $search = $request->search??null;
+        $length = $request->length??10;
+
+        $siswa = Siswa::with('kelas')
+        ->when($kelas_id, function($sub) use($kelas_id){
+            $sub->where('kelas_id',$kelas_id);
+        })
+        ->orderBy('nama_lengkap','ASC')
+        ->orderBy('kelas_id','ASC')
+        ->paginate($length);
+
+        return response()
+        ->json($siswa);
+
     }
 }

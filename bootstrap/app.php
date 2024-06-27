@@ -19,7 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api(append:[
 
         ])->alias([
-            'role' => \App\Http\Middleware\Api\RoleMiddleware::class
+            'role' => \App\Http\Middleware\Api\RoleMiddleware::class,
         ]);
         //
     })

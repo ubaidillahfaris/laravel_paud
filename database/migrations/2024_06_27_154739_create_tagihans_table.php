@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('status');
             $table->decimal('nominal',15,2)->default(0);
             $table->decimal('nominal_terbayar',15,2)->default(0);
-            $table->dateTime('tanggal_bayar');
-            $table->string('gambar_faktur');
+            $table->dateTime('tanggal_bayar')->nullable();
+            $table->string('gambar_faktur')->nullable();
             $table->string('tempat_bayar')->nullable();
             $table->string('teller')->nullable();
             $table->timestamps();
