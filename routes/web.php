@@ -229,7 +229,9 @@ Route::middleware('auth')
             ->name('kegiatan.')
             ->controller(KegiatanRpphController::class)
             ->group(function(){
-
+                Route::post('{rpphId}/store','store')->name('store');
+                Route::put('update/{id}','id')->name('update');
+                Route::delete('delete/{id}','delete')->name('delete');
             });
         });
 
