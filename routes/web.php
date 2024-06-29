@@ -216,16 +216,16 @@ Route::middleware('auth')
         });
 
         Route::prefix('rpph')
-        ->name('rpph.')
         ->group(function(){
-            Route::controller(RpphController::class)
+           
+            Route::name('rpph.')->controller(RpphController::class)
             ->group(function(){
                 Route::post('create','create')->name('create');
                 Route::put('update/{rpphId}','update')->name('update');
                 Route::delete('delete/{id}','delete')->name('delete');
             });
 
-            Route::prefix('kegiatan/{rpphId}')
+            Route::prefix('kegiatan')
             ->name('kegiatan.')
             ->controller(KegiatanRpphController::class)
             ->group(function(){
