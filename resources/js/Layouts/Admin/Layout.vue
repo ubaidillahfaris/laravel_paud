@@ -22,7 +22,7 @@
 <script>
     import ApplicationLogo from '@/Components/ApplicationLogo.vue';
     import Sidebar from '@/Layouts/Admin/Sidebar.vue';
-    import Navbar from '@/Layouts/Navbar.vue';
+    import Navbar from '@/Layouts/Admin/Navbar.vue';
 export default{
     components:{
         ApplicationLogo, Sidebar,Navbar

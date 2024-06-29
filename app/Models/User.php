@@ -51,6 +51,10 @@ class User extends Authenticatable
         return $this->hasOneThrough(Sekolah::class,AdminSekolah::class,'user_id','id','id','sekolah_id');
     }
 
+    public function guru(){
+        return $this->hasOne(Guru::class,'user_id','id');
+    }
+
     public function wali(){
         return $this->hasOne(OrangTua::class,'user_id','id');
     }

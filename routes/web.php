@@ -4,11 +4,14 @@ use App\Http\Controllers\AdminSekolahController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GuruController;
+use App\Http\Controllers\KegiatanRpphController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\PpdbMasterController;
 use App\Http\Controllers\ProgramLayananController;
 use App\Http\Controllers\RiwayatKelasController;
+use App\Http\Controllers\RpphController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TabunganController;
@@ -16,10 +19,8 @@ use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TahunPelajaranController;
 use App\Http\Controllers\WilayahController;
 use App\Http\Middleware\AdminMiddleware;
-use App\Http\Middleware\Api\WaliMiddleware;
 use App\Http\Middleware\GuruMiddleware;
-use App\Models\AdminSekolah;
-use App\Models\RiwayatKelas;
+use App\Models\KegiatanRpph;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -129,6 +130,15 @@ Route::middleware('auth')
             Route::delete('delete/{id}','delete')->name('delete');
         });
 
+        Route::prefix('guru')
+        ->name('guru.')
+        ->controller(GuruController::class)
+        ->group(function(){
+            Route::get('show','show')->name('show');
+            Route::put('update/{userId}','update')->name('update');
+            Route::delete('delete/{id}','destroy')->name('delete');
+        });
+
         Route::prefix('riwayat_kelas')
         ->name('riwayat_kelas.')
         ->controller(RiwayatKelasController::class)
@@ -203,6 +213,24 @@ Route::middleware('auth')
             Route::delete('delete/{id}','destroy')->name('destroy');
             Route::get('show_siswa/{siswaId}','show_by_siswa_id')->name('show_by_siswa_id');
             Route::get('show_kelas/{kelasId}','show_by_kelas')->name('show_by_kelas');
+        });
+
+        Route::prefix('rpph')
+        ->name('rpph.')
+        ->group(function(){
+            Route::controller(RpphController::class)
+            ->group(function(){
+                Route::post('create','create')->name('create');
+                Route::put('update/{rpphId}','update')->name('update');
+                Route::delete('delete/{id}','delete')->name('delete');
+            });
+
+            Route::prefix('kegiatan/{rpphId}')
+            ->name('kegiatan.')
+            ->controller(KegiatanRpphController::class)
+            ->group(function(){
+
+            });
         });
 
     });

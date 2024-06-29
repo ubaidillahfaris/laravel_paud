@@ -118,6 +118,18 @@ class TahunPelajaranController extends Controller
         ->json($tahunAjaran);
     }
 
+
+    /**
+     * show active tahun ajaran
+     */
+    public function show_active(int $sekolahId){
+        $tahun_ajaran = TahunPelajaran::where('sekolah_id',$sekolahId)
+        ->where('is_active',true)
+        ->first();
+
+        return $tahun_ajaran;
+    }
+
     public function update(Request $request, $id){
         try {
             $data = array_filter($request->all());
@@ -185,4 +197,5 @@ class TahunPelajaranController extends Controller
             ],500);
         }
     }
+    
 }

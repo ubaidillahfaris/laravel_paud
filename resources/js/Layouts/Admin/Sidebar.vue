@@ -1586,7 +1586,6 @@ export default {
                     status : route().current('kelas.*')
                     
                 },
-               
             ]
         };
     },
