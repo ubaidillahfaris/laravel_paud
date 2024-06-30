@@ -16,35 +16,52 @@
 
         <!-- body -->
         <div class="w-full row">
+            <div class="d-inline-flex align-items-start col-md-12 mb-3">
+                <div class="mx-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24"><path fill="currentColor" d="M12.088 4.82a10 10 0 0 1 9.412.314a1 1 0 0 1 .493.748L22 6v13a1 1 0 0 1-1.5.866a8 8 0 0 0-8 0a1 1 0 0 1-1 0a8 8 0 0 0-7.733-.148l-.327.18l-.103.044l-.049.016l-.11.026l-.061.01L3 20h-.042l-.11-.012l-.077-.014l-.108-.032l-.126-.056l-.095-.056l-.089-.067l-.06-.056l-.073-.082l-.064-.089l-.022-.036l-.032-.06l-.044-.103l-.016-.049l-.026-.11l-.01-.061l-.004-.049L2 19V6a1 1 0 0 1 .5-.866a10 10 0 0 1 9.412-.314l.088.044z"/></svg>
+                </div>
+                <p class="text-primary bold">
+                    <b>{{ kurikulum.name }}</b>
+                </p>
+            </div>
+
+
             <div class="col-md-12">
                 <div class="form-group mb-3">
                     <label class="mr-sm-2" for="inlineFormCustomSelect">Kelas</label>
                     <select v-model="form.kelas_id" class="form-select mr-sm-2" id="inlineFormCustomSelect">
                         <option selected hidden :value="null">Pilih kelas...</option>
-                        <option value="teks" v-for="(item, index) in kelas" :value="item.id" :key="index"> {{ item.nama }}</option>
+                        <option  v-for="(item, index) in kelas" :value="item.id" :key="index"> {{ item.nama }}</option>
                     </select>
+                    <span class="text-danger" v-if="errors['kelas_id']" >isi data kelas</span>
                 </div>
             </div>
+
+            
             <div class="col-md-6">
                 <div class="form-floating mb-3">
                     <input
+                    v-model="form.tema"
                     type="text"
                     class="form-control"
                     id="tb-fname"
                     placeholder="tema"
                     />
                     <label for="tb-fname">Tema</label>
+                    <span class="text-danger" v-if="errors['tema']" >isi tema</span>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
                     <input
+                    v-model="form.sub_tema"
                     type="text"
                     class="form-control"
                     id="tb-fname"
                     placeholder="tema"
                     />
                     <label for="tb-fname">Sub Tema</label>
+                    <span class="text-danger" v-if="errors['sub_tema']" >isi sub tema</span>
                 </div>
             </div>
             <div class="col-md-12 mb-3">
@@ -53,6 +70,7 @@
             <div class="col-md-6">
                 <div class="form-floating mb-3">
                     <input
+                    v-model="form.start_date"
                     type="date"
                     class="form-control"
                     id="tb-fname"
@@ -64,6 +82,7 @@
             <div class="col-md-6">
                 <div class="form-floating mb-3">
                     <input
+                    v-model="form.end_date"
                     type="date"
                     class="form-control"
                     id="tb-fname"
@@ -269,7 +288,7 @@
                 </div>
             <!-- end alat bahan form -->
              <div class="col-md-12">
-                <button class="btn btn-primary">Simpan</button>
+                <button @click="postRpphHandler" class="btn btn-primary">Simpan</button>
              </div>
         </div>
 
@@ -281,13 +300,16 @@
 import AuthenticatedLayout from '@/Layouts/Guru/Layout.vue';
 import {Link, useForm} from '@inertiajs/vue3';
 import axios from 'axios';
+import Toast from '@/Toast.js';
+
 export default {
     components:{
         Link,AuthenticatedLayout
     },
     props:{
         guru:Object,
-        kelas:Array
+        kelas:Array,
+        kurikulum:Object
     },
     data() {
         return {
@@ -298,6 +320,7 @@ export default {
             alatBahanInput:null,
             form:useForm({
                 'kelas_id':null,
+                'kurikulum_id' : this.kurikulum.id,
                 'tema' : null,
                 'sub_tema' : null,
                 'start_date' : null,
@@ -308,7 +331,8 @@ export default {
                 'metode': [],
                 'sumber_belajar': [],
                 'alat_bahan': [],
-            })
+            }),
+            errors:{}
         }
     },
     mounted() {
@@ -326,8 +350,8 @@ export default {
             this.form.capaian_pembelajaran = [];
         },
         addTujuanPembelajaran(){
-            this.form.tujuan_pembelajaran.push(this.capaianPembelajaranInput);
-            this.capaianPembelajaranInput = null;
+            this.form.tujuan_pembelajaran.push(this.tujuanPembelajaranInput);
+            this.tujuanPembelajaranInput = null;
         },
         deleteTujuanPembelajaran(index){
             this.form.tujuan_pembelajaran.splice(index, 1);
@@ -364,6 +388,39 @@ export default {
         },
         clearAlatBahan(){
             this.form.alat_bahan = [];
+        },
+        async postRpphHandler(){
+            
+            try {
+
+                let request = await axios.post(route('rpph.store'),this.form);
+                Toast.fire({
+                    title : 'Berhasil menyimpan data',
+                    icon : 'success',
+                    text : 'lanjutkan untuk membuat kegiatan rpph',
+                    timer : 3000
+                });
+
+            } catch (error) {
+                this.mappingErrorResponse(error)
+                Toast.fire({
+                    title : 'Gagal menyimpan data',
+                    icon : 'error',
+                    text : error.response.data.message,
+                    timer : 3000
+                });
+            }
+        },
+        mappingErrorResponse(error){
+            this.errors = [];
+
+            const message = error.response.data.detail;
+            for (const key in message) {
+                if (Object.hasOwnProperty.call(message, key)) {
+                    const element = message[key];
+                    this.errors[key] = element[0]
+                }
+            }
         }
     }
 }

@@ -228,16 +228,18 @@ Route::middleware('auth')
             Route::name('rpph.')->controller(RpphController::class)
             ->group(function(){
                 Route::get('create','create')->name('create');
+                Route::get('show','show')->name('show');
                 Route::post('store','store')->name('store');
                 Route::put('update/{rpphId}','update')->name('update');
                 Route::delete('delete/{id}','delete')->name('delete');
             });
 
             Route::prefix('kegiatan')
-            ->name('kegiatan.')
+            ->name('rpph.kegiatan.')
             ->controller(KegiatanRpphController::class)
             ->group(function(){
-                Route::post('{rpphId}/store','store')->name('store');
+                Route::get('create/{rpphId}','create')->name('create');
+                Route::post('store/{rpphId}','store')->name('store');
                 Route::put('update/{id}','id')->name('update');
                 Route::delete('delete/{id}','delete')->name('delete');
             });

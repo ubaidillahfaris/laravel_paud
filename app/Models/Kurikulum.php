@@ -10,4 +10,8 @@ class Kurikulum extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = ['name','is_active','curriculum_start_date','curriculum_end_date'];
+
+    public function sekolah(){
+        return $this->hasManyThrough(Sekolah::class,KurikulumSekolah::class,'kurikulum_id','id','id','sekolah_id');
+    }
 }

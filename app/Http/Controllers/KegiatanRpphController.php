@@ -5,24 +5,41 @@ namespace App\Http\Controllers;
 use App\Models\KegiatanRpph;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 class KegiatanRpphController extends Controller
 {
+
+    /**
+     * Create page by rpph id
+     */
+    public function create(Request $request, int $rpphId){
+
+        return Inertia::render('Rpph/Kegiatan/Create',[
+            'rpph_id' => $rpphId
+        ]);
+    }
+
     /**
      * store kegiatan rpph by rpph id
      */
     public function store(Request $request, $rpphId){
         try {
+
+            // dd($request->all());
             
             $request->validate([
-                'data.name' => ['required'],
-                'data.start_time' => ['required'],
-                'data.end_time' => ['required'],
-                'data.langkah' => ['required'],
+                'data.*.name' => ['required'],
+                'data.*.start_time' => ['required'],
+                'data.*.end_time' => ['required'],
+                'data.*.langkah' => ['required'],
             ]);
 
             // mapping data 
             foreach ($request->data as $key => $value) {
+
+                $value['langkah'] = json_encode($value['langkah']);
+                $value['rpph_id'] = $rpphId;
                 KegiatanRpph::create($value);
             }
 
