@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->unsignedBigInteger('guru_id');
+            $table->json('capaian_pembelajaran')->nullable();
             $table->json('tujuan_pembelajaran')->nullable();
             $table->json('metode')->nullable();
             $table->json('sumber_belajar')->nullable();

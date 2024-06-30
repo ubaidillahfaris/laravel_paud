@@ -52,6 +52,16 @@ class KelasController extends Controller
         }
     }
 
+    /**
+     * show kelas by sekolah id
+     */
+    public function show_kelas_by_sekolah(int $sekolahId){
+        $kelas = Kelas::where('sekolah_id',$sekolahId)
+        ->orderBy('nama','ASC')
+        ->get();
+        return $kelas;
+    }
+
     public function show(Request $request){
         $length = $request->length??10;
         $search = $request->search??null;

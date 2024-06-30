@@ -15,6 +15,10 @@ class DashboardController extends Controller
         return Inertia::render('Dashboard/admin');
     }
 
+    public function guru(){
+        return Inertia::render('Dashboard/Guru');
+    }
+
     public function wali(){
         return Inertia::render('Dashboard/admin');
     }

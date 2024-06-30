@@ -14,7 +14,7 @@ class Rpph extends Model
         'semester_id',
         'kurikulum_id',
         'tema','sub_tema','start_date','end_date',
-        'guru_id','tujuan_pembelajaran','metode',
+        'guru_id','capaian_pembelajaran','tujuan_pembelajaran','metode',
         'sumber_belajar','alat_bahan',
     ];
 

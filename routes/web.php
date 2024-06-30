@@ -20,6 +20,7 @@ use App\Http\Controllers\TahunPelajaranController;
 use App\Http\Controllers\WilayahController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\GuruMiddleware;
+use App\Http\Middleware\SuperadminMiddleware;
 use App\Models\KegiatanRpph;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -27,7 +28,9 @@ use Inertia\Inertia;
 Route::middleware('guest')
 ->group(function(){
 
-    Route::get('/',function(){return redirect('login');});
+    Route::get('/',function(){
+        return redirect('login');
+    });
     Route::post('register',[RegisteredUserController::class,'store'])->name('register_page');
     Route::get('register',function(){
         return Inertia::render('Auth/Register');
@@ -46,8 +49,12 @@ Route::middleware('auth')
     ->name('dashboard.')
     ->controller(DashboardController::class)
     ->group(function(){
-        Route::get('superadmin','superadmin')->name('superadmin');
-        Route::get('admin','admin')->name('admin');
+        Route::get('superadmin','superadmin')
+        ->middleware(SuperadminMiddleware::class)->name('superadmin');
+        Route::get('guru','guru')
+        ->middleware(GuruMiddleware::class)->name('guru');
+        Route::get('admin','admin')
+        ->middleware(AdminMiddleware::class)->name('admin');
         Route::get('wali','wali')->name('wali');
     });
 
@@ -220,7 +227,8 @@ Route::middleware('auth')
            
             Route::name('rpph.')->controller(RpphController::class)
             ->group(function(){
-                Route::post('create','create')->name('create');
+                Route::get('create','create')->name('create');
+                Route::post('store','store')->name('store');
                 Route::put('update/{rpphId}','update')->name('update');
                 Route::delete('delete/{id}','delete')->name('delete');
             });

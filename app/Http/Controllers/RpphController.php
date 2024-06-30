@@ -8,9 +8,25 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 class RpphController extends Controller
 {
+
+
+    /**
+     * Create page
+     */
+    public function create(KelasController $kelasController){
+        $user_guru = Auth::user();
+        $sekolahId = $user_guru->guru->sekolah_id;
+        $kelas = $kelasController->show_kelas_by_sekolah($sekolahId);
+        
+        return Inertia::render('Rpph/Create',[
+            'guru' => $user_guru,
+            'kelas' => $kelas
+        ]);
+    }
     /**
      * store data rpph
      */
