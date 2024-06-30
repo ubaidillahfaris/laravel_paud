@@ -117,12 +117,18 @@ export default {
                 {
                     label : 'RPPH',
                     icon : '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><rect width="40" height="32" x="4" y="8" rx="2"/><path d="M32 25v7m-8-16v16m-8-12v12"/></g></svg>',
-                    status : route().current('ppdb.*') || route().current('tahun_ajaran.*') || route().current('program_layanan.*'),
+                    status : route().current('rpph.*'),
                     child : [ 
+                        {
+                            label : 'Daftar',
+                            route : route('rpph.index'),
+                            status : route().current('rpph.index'),
+                            icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill="currentColor" fill-rule="evenodd" d="M10 5a5 5 0 1 0 0 10a5 5 0 0 0 0-10m-6 5a6 6 0 1 1 12 0a6 6 0 0 1-12 0" clip-rule="evenodd"/></svg>'
+                        },
                         {
                             label : 'Buat data',
                             route : route('rpph.create'),
-                            status : route().current('rpph.*'),
+                            status : route().current('rpph.create'),
                             icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill="currentColor" fill-rule="evenodd" d="M10 5a5 5 0 1 0 0 10a5 5 0 0 0 0-10m-6 5a6 6 0 1 1 12 0a6 6 0 0 1-12 0" clip-rule="evenodd"/></svg>'
                         },
                         

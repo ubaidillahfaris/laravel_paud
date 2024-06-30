@@ -18,6 +18,11 @@ class Rpph extends Model
         'sumber_belajar','alat_bahan',
     ];
 
+
+    public function guru(){
+        return $this->hasOne(User::class,'id','guru_id');
+    }
+
     public function kelas(){
         return $this->hasOne(Kelas::class,'id','kelas_id');
     }

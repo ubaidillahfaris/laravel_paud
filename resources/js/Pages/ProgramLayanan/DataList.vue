@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import FilterTable from './FilterTable.vue';
+import FilterTable from '@/Components/FilterTable.vue';
 import {Link} from '@inertiajs/vue3';
 import axios from 'axios';
 import Swal from 'sweetalert2';

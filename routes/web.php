@@ -227,7 +227,9 @@ Route::middleware('auth')
            
             Route::name('rpph.')->controller(RpphController::class)
             ->group(function(){
+                Route::get('/','index')->name('index');
                 Route::get('create','create')->name('create');
+                Route::get('cetak/{id}','cetak')->name('cetak');
                 Route::get('show','show')->name('show');
                 Route::post('store','store')->name('store');
                 Route::put('update/{rpphId}','update')->name('update');

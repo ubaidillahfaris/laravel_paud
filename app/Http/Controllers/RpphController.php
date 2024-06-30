@@ -6,6 +6,7 @@ use App\Models\KurikulumSekolah;
 use App\Models\Rpph;
 use App\Models\TahunPelajaran;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -14,6 +15,13 @@ use Inertia\Inertia;
 class RpphController extends Controller
 {
 
+
+    /**
+     * index page
+     */
+    public function index(){
+        return Inertia::render('Rpph/Index');
+    }
 
     /**
      * Create page
@@ -45,7 +53,7 @@ class RpphController extends Controller
         $user_guru = Auth::user();
         $sekolahId = $user_guru->guru->sekolah_id;
 
-        $rpph = Rpph::with('kelas','semester','kurikulum','kegiatan')
+        $rpph = Rpph::with('guru','kelas','semester','kurikulum','kegiatan')
         ->whereHas('kelas',function($sub) use($sekolahId){
             $sub->where('sekolah_id',$sekolahId);
         })
@@ -196,5 +204,15 @@ class RpphController extends Controller
                 'detail' => $th->getMessage()
             ],500);
         }
+    }
+
+    /**
+     * Cetak RPPH
+     */
+    public function cetak(int $id){
+        $rpph = Rpph::where('id',$id)->with('guru','kelas','semester','kurikulum','kegiatan')
+        ->first();
+        $pdf = Pdf::loadView('pdf.rpph', ['rpph' => $rpph->toArray()]);
+        return $pdf->download('invoice.pdf');
     }
 }

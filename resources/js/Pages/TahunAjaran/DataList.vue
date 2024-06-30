@@ -99,7 +99,6 @@ export default {
     },
     beforeMount() {
         this.fetchData();
-        console.log(this.onRefresh);
     },
     computed: {
         lengthData(){
