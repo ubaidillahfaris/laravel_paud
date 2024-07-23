@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         ])->alias([
             'role' => \App\Http\Middleware\Api\RoleMiddleware::class,
+            'sekolah' => \App\Http\Middleware\SekolahMiddleware::class,
         ]);
         //
     })

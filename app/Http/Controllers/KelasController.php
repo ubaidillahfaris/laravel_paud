@@ -7,13 +7,25 @@ use App\Models\RiwayatKelas;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
-class KelasController extends Controller
+class KelasController extends Controller implements HasMiddleware
 {
+
+    protected $sekolah_id;
+
+    public static function middleware(): array
+    {
+        return ['sekolah'];
+    }
+
+    public function __construct(Request $request) {
+        $this->sekolah_id = $request->attributes->get('sekolah_id');
+    }
 
     public function index(){
         return Inertia::render('Kelas/Kelas');
@@ -66,12 +78,8 @@ class KelasController extends Controller
         $length = $request->length??10;
         $search = $request->search??null;
 
-        // mendapatkan id sekolah dari user
-        $user = User::where('id',Auth::user()->id)->with('sekolah')
-        ->first();
-
         // mengambil data kelas
-        $kelas = Kelas::where('sekolah_id',$user->sekolah->id)
+        $kelas = Kelas::where('sekolah_id',$this->sekolah_id)
         ->with('tahun_ajaran', 'siswa')
         ->withCount('siswa')
         ->whereHas('tahun_ajaran',function($sub){

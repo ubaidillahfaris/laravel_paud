@@ -21,7 +21,6 @@ use App\Http\Controllers\WilayahController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\GuruMiddleware;
 use App\Http\Middleware\SuperadminMiddleware;
-use App\Models\KegiatanRpph;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 

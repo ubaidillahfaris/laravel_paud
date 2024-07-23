@@ -212,9 +212,9 @@ class TabunganController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Tabungan $tabungan)
+    public function show(int $siswaId)
     {
-        //
+        
     }
 
     /**

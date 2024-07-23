@@ -57,4 +57,8 @@ class Siswa extends Model
         ->where('status','send');
     }
 
+    public function tabungan(){
+        return $this->hasOne(Tabungan::class,'siswa_id','id');
+    }
+
 }

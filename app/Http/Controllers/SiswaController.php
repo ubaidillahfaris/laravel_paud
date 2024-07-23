@@ -6,11 +6,23 @@ use App\Models\Kelas;
 use App\Models\Siswa;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-class SiswaController extends Controller
+class SiswaController extends Controller implements HasMiddleware
 {
+
+    protected $sekolah_id;
+
+    public static function middleware(): array
+    {
+        return ['sekolah'];
+    }
+
+    public function __construct(Request $request) {
+        $this->sekolah_id = $request->attributes->get('sekolah_id');
+    }
 
     /**
      * show index siswa page
@@ -64,11 +76,19 @@ class SiswaController extends Controller
         }
     }
 
-    public function show(Request $request, $kelas_id){
+    /**
+     * show data siswa
+     */
+    public function show(Request $request, $kelas_id = null){
         $search = $request->search??null;
         $length = $request->length??10;
+        $tahunAjaran = $request->tahun_ajaran??null;
+        $sekolah_id = $this->sekolah_id;
 
-        $siswa = Siswa::with('kelas')
+        $siswa = Siswa::with('kelas','kota_lahir','tabungan')
+        ->whereHas('kelas',function($sub) use($sekolah_id){
+            $sub->where('sekolah_id',$sekolah_id);
+        })
         ->when($kelas_id, function($sub) use($kelas_id){
             $sub->where('kelas_id',$kelas_id);
         })
