@@ -19,4 +19,12 @@ class Tagihan extends Model
         'tempat_bayar',
         'teller',
     ];
+
+    public function siswa(){
+        return $this->hasOne(Siswa::class,'id','siswa_id');
+    }
+
+    public function siswa_kelas(){
+        return $this->hasOneThrough(Kelas::class,Siswa::class,'id','id','siswa_id','kelas_id');
+    }
 }

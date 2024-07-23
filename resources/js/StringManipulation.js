@@ -1,3 +1,5 @@
+import currency from "currency.js";
+
 class StringManipulation {
 
     capitalize(string){
@@ -14,6 +16,10 @@ class StringManipulation {
         return stringArr.join(' ');
     }
 
+    static rupiah(value){
+        const format = currency(value, { symbol: 'Rp. ', decimal: '.', separator: ',' })
+        return format.format()
+    }
 }
 
 export default StringManipulation;

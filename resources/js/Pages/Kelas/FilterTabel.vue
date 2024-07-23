@@ -1,12 +1,15 @@
 <template>
     <div class="container">
         <div class="row justify-content-between">
-            <div class="col-2 py-8" >
-                <select v-model="selectedLength" class="form-select">
-                    <option :value="item" v-for="(item, index) in lengthData" :key="index">
-                        {{ item }}
-                    </option>
-                </select>
+            <div class="col row align-items-center"> 
+                <div class="col-2 py-8" >
+                    <select v-model="selectedLength" class="form-select">
+                        <option :value="item" v-for="(item, index) in lengthData" :key="index">
+                            {{ item }}
+                        </option>
+                    </select>
+                </div>
+                <slot></slot>
             </div>
             <div class="col-3 py-8">
                 <input

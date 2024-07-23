@@ -134,6 +134,19 @@ export default {
                         
                     ]
                 },
+                {
+                    label : 'Keuangan',
+                    icon : '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M10 6a2 2 0 0 1 2-2h24a2 2 0 0 1 2 2v38l-7-5l-7 5l-7-5l-7 5zm8 16h12m-12 8h12M18 14h12"/></svg>',
+                    status : route().current('tagihan.*'),
+                    child : [ 
+                        {
+                            label : 'Tagihan',
+                            route : route('tagihan.index'),
+                            status : route().current('tagihan.index'),
+                            icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill="currentColor" fill-rule="evenodd" d="M10 5a5 5 0 1 0 0 10a5 5 0 0 0 0-10m-6 5a6 6 0 1 1 12 0a6 6 0 0 1-12 0" clip-rule="evenodd"/></svg>'
+                        },
+                    ]
+                },
                 
             ]
         };

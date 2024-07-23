@@ -62,4 +62,13 @@ class TagihanTest extends TestCase
         ->get(route('tagihan.show_by_siswa_id',['siswaId' => 4]));
         $response->assertStatus(200);
     }
+
+    public function test_show_all_tagihan(){
+        $user = User::where('email','guru@gmail.com')
+        ->first();
+
+        $response = $this->actingAs($user)
+        ->get(route('tagihan.show'));
+        $response->assertStatus(200);
+    }
 }

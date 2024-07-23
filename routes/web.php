@@ -102,27 +102,6 @@ Route::middleware('auth')
     Route::middleware(AdminMiddleware::class)
     ->group(function(){
 
-        Route::prefix('siswa')
-        ->name('siswa.')
-        ->controller(SiswaController::class)
-        ->group(function(){
-            Route::get('show/{kelas_id}','show')->name('show');
-            Route::get('/{kelas_id}','index')->name('index');
-        });
-
-        Route::prefix('kelas')
-        ->name('kelas.')
-        ->controller(KelasController::class)
-        ->group(function(){
-            Route::get('index','index')->name('index');
-            Route::get('edit/{id}','edit')->name('edit');
-            Route::put('update/{id}','update')->name('update');
-            Route::get('create','create')->name('create');
-            Route::get('show','show')->name('show');
-            Route::post('store','store')->name('store');
-            Route::delete('delete/{id}','delete')->name('delete');
-        });
-    
         Route::prefix('tahun_ajaran')
         ->name('tahun_ajaran.')
         ->controller(TahunPelajaranController::class)
@@ -200,27 +179,20 @@ Route::middleware('auth')
             Route::put('update/{transaksi_id}','update')->name('update');
             Route::delete('destroy/{transaksi_id}','destroy')->name('destroy');
         });
+        
     });
+    /**
+     * end admin route
+     */
 
 
 
-    // middleware : guru
-
+    /**
+     * guru route
+     */
     Route::middleware(GuruMiddleware::class)
     ->group(function(){
         
-        Route::prefix('tagihan')
-        ->name('tagihan.')
-        ->controller(TagihanController::class)
-        ->group(function(){
-            Route::post('store','store')->name('store');
-            Route::put('bayar/{id}','bayar')->name('bayar');
-            Route::put('validasi/{id}','validasi_pembayaran')->name('validasi_pembayaran');
-            Route::delete('delete/{id}','destroy')->name('destroy');
-            Route::get('show_siswa/{siswaId}','show_by_siswa_id')->name('show_by_siswa_id');
-            Route::get('show_kelas/{kelasId}','show_by_kelas')->name('show_by_kelas');
-        });
-
         Route::prefix('rpph')
         ->group(function(){
            
@@ -247,7 +219,48 @@ Route::middleware('auth')
         });
 
     });
+    //  end gurur route
    
 
+
+    Route::prefix('tagihan')
+    ->name('tagihan.')
+    ->controller(TagihanController::class)
+    ->group(function(){
+        Route::get('/','index')->name('index');
+        Route::get('index','index')->name('index');
+        Route::get('show','show')->name('show');
+
+
+        Route::post('store','store')->name('store');
+        Route::put('bayar/{id}','bayar')->name('bayar');
+        Route::put('validasi/{id}','validasi_pembayaran')->name('validasi_pembayaran');
+        Route::delete('delete/{id}','destroy')->name('destroy');
+        Route::get('show_siswa/{siswaId}','show_by_siswa_id')->name('show_by_siswa_id');
+        Route::get('show_kelas/{kelasId}','show_by_kelas')->name('show_by_kelas');
+    });
    
+
+    Route::prefix('siswa')
+    ->name('siswa.')
+    ->controller(SiswaController::class)
+    ->group(function(){
+        Route::get('show/{kelas_id}','show')->name('show');
+        Route::get('/{kelas_id}','index')->name('index');
+    });
+
+    Route::prefix('kelas')
+    ->name('kelas.')
+    ->controller(KelasController::class)
+    ->group(function(){
+        Route::get('index','index')->name('index');
+        Route::get('show','show')->name('show');
+        Route::get('show_all','show_all')->name('show_all');
+
+        Route::get('edit/{id}','edit')->name('edit');
+        Route::put('update/{id}','update')->name('update');
+        Route::get('create','create')->name('create');
+        Route::post('store','store')->name('store');
+        Route::delete('delete/{id}','delete')->name('delete');
+    });
 });

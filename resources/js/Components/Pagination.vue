@@ -22,7 +22,7 @@ export default {
         linksData:Array
     },
     mounted() {
-        console.log(this.linksData);
+      
     },
     methods: {
         onClick(url){

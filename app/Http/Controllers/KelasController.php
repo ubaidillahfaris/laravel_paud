@@ -74,25 +74,54 @@ class KelasController extends Controller implements HasMiddleware
         return $kelas;
     }
 
-    public function show(Request $request){
-        $length = $request->length??10;
-        $search = $request->search??null;
+    /**
+     * Build the base query for fetching Kelas data.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function baseQuery()
+    {
+        return Kelas::where('sekolah_id', $this->sekolah_id)
+        ->whereHas('tahun_ajaran', function ($query) {
+            $query->where('is_active', true);
+        });
+    }
 
-        // mengambil data kelas
-        $kelas = Kelas::where('sekolah_id',$this->sekolah_id)
+    /**
+     * Show the paginated list of Kelas with optional search functionality.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Request $request)
+    {
+        $length = $request->input('length', 10); // default to 10 if not provided
+        $search = $request->input('search', null);
+
+        $kelasQuery = $this->baseQuery()
         ->with('tahun_ajaran', 'siswa')
         ->withCount('siswa')
-        ->whereHas('tahun_ajaran',function($sub){
-            $sub->where('is_active',true);
+        ->when($search, function ($query) use ($search) {
+            $query->where('nama', 'ILIKE', "%{$search}%");
         })
-        ->when($search != null,function($sub) use($search){
-            $sub->where('nama','ILIKE',"%$search%");
-        })
-        ->orderBy('nama','ASC')
-        ->paginate($length);
+        ->orderBy('nama', 'ASC');
 
-        return response()
-        ->json($kelas);
+        $kelas = $kelasQuery->paginate($length);
+
+        return response()->json($kelas);
+    }
+
+    /**
+     * Show all Kelas data without pagination.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show_all()
+    {
+        $kelas = $this->baseQuery()
+        ->orderBy('nama','ASC')
+        ->get();
+        return response()->json($kelas);
     }
 
     public function attachClassToSchoolYear(Request $request){

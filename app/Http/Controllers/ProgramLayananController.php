@@ -11,6 +11,21 @@ use Inertia\Inertia;
 
 class ProgramLayananController extends Controller
 {
+
+    protected $sekolah;
+
+    public function __construct() {
+        try {
+            $user = User::where('id',Auth::user()->id)
+            ->with('sekolah')
+            ->first();
+
+            $this->sekolah = $user->sekolah;
+        } catch (\Throwable $th) {
+            abort(400);
+        }
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -37,6 +52,7 @@ class ProgramLayananController extends Controller
         $programLayanan = ProgramLayanan::when($search, function($sub) use($search){
             $sub->where('name','ILIKE',"%$search%");
         })
+        ->where('sekolah_id',$this->sekolah->id)
         ->paginate($length);
 
         return response()
@@ -55,13 +71,9 @@ class ProgramLayananController extends Controller
             $request->validate([
                 'name' => 'required'
             ]);
-
-            $user = User::where('id',Auth::user()->id)
-            ->with('sekolah')
-            ->first();
-
+            
             ProgramLayanan::create([
-                'sekolah_id' => $user->sekolah->id,
+                'sekolah_id' => $this->sekolah->id,
                 'name' => $request->name
             ]);
 

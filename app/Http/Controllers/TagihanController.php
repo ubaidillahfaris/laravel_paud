@@ -9,15 +9,25 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 class TagihanController extends Controller
 {
+
+    protected $user;
+
+    public function __construct(Request $request) {
+        $this->user = $request->user();
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return Inertia::render('Tagihan/Index',[
+            'user_role' => $this->user->role
+        ]);
     }
 
     /**
@@ -78,12 +88,42 @@ class TagihanController extends Controller
      */
     public function show(Request $request)
     {
-        
+        $search = $request->search??null;
+        $length = $request->length??10;
+        $kelas = $request->input('kelas',null);
+
+        $guruData = $this->user->guru;
+        $sekolahId = $guruData->sekolah_id;
+        if (!isset($sekolahId)) {
+            return response()
+            ->json([
+                'message' => 'no permission found'
+            ],401);
+        }
+
+        $tagihan = Tagihan::with('siswa','siswa_kelas')
+        ->whereHas('siswa_kelas',function($sub) use($sekolahId){
+            $sub->where('sekolah_id',$sekolahId);
+        })
+        ->when($search, function($sub) use($search){
+            $sub->whereHas('siswa',function($subSiswa) use($search){
+                $subSiswa->whereAny(['nama_lengkap','nama_panggilan'],'ilike',"%$search%");
+            });
+        })
+        ->when($kelas != null, function($sub) use($kelas){
+            $sub->whereHas('siswa_kelas',function($subKelas) use($kelas){
+                $subKelas->where('kelas_id',$kelas);
+            });
+        })
+        ->orderBy('created_at','DESC')
+        ->paginate($length);
+
+        return response()
+        ->json($tagihan);
     }
 
     public function showTagihanByOrtuNotPaid(Request $request){
         $user = User::find(Auth::user()->id);
-
     }
 
     /**
@@ -97,7 +137,9 @@ class TagihanController extends Controller
     }
     
     public function show_by_kelas(int $kelasId){
-        $tagihan = Siswa::select('tagihans.*')->with('tagihan')->where('kelas_id',$kelasId)
+        $tagihan = Siswa::select('tagihans.*')
+        ->with('tagihan')
+        ->where('kelas_id',$kelasId)
         ->paginate();
 
         return response()
