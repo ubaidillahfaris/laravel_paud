@@ -232,7 +232,7 @@ Route::middleware('auth')
                 Route::get('show','show')->name('show');
                 Route::post('store','store')->name('store');
                 Route::put('update/{rpphId}','update')->name('update');
-                Route::delete('delete/{id}','delete')->name('delete');
+                Route::delete('delete/{id}','destroy')->name('delete');
             });
 
             Route::prefix('kegiatan')
