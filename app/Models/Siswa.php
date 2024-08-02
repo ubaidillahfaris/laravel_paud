@@ -61,4 +61,20 @@ class Siswa extends Model
         return $this->hasOne(Tabungan::class,'siswa_id','id');
     }
 
+    public function asesmen_ceklis(){
+        return $this->hasMany(AsesmenCeklis::class,'siswa_id','id');
+    }
+
+    public function asesmen_dokumen_karya(){
+        return $this->hasMany(AsesmenDokumenKarya::class,'siswa_id','id');
+    }
+
+    public function asesmen_catatan_anekdot(){
+        return $this->hasMany(AsesmenCatatanAnekdot::class,'siswa_id','id');
+    }
+
+    public function asesmen_foto_berseri(){
+        return $this->hasMany(AsesmenFotoBerseri::class,'siswa_id','id');
+    }
+
 }

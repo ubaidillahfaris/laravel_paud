@@ -81,15 +81,23 @@ class TahunPelajaranController extends Controller
         }
     }
 
-    public function showAll(){
+    public function showAll(Request $request){
          // mengambil data sekolah user request
-         $user = User::where('id',Auth::user()->id)
-         ->with('sekolah')
-         ->first();
+        $user = $request->user();
+        $sekolahId = null;
+        switch ($user->role) {
+            case 'guru':
+                $sekolahId = $user->guru->sekolah_id;
+            break;
+            case 'admin':
+                $sekolahId = $user->sekolah->sekolah_id;
+            break;
+        }
 
-         $tahunAjaran = TahunPelajaran::where('sekolah_id',$user->sekolah->id)
-         ->where('is_active',true)
-        ->orderBy('id','DESC')->get();
+        $tahunAjaran = TahunPelajaran::where('sekolah_id',$sekolahId)
+        ->where('is_active',true)
+        ->orderBy('id','DESC')
+        ->first();
 
         return response()
         ->json($tahunAjaran);
@@ -102,16 +110,23 @@ class TahunPelajaranController extends Controller
         $tahun_ajaran = explode('/',$getTahunAjaran);
 
         // mengambil data sekolah user request
-        $user = User::where('id',Auth::user()->id)
-        ->with('sekolah')
-        ->first();
-
+        $user = $request->user();
+        $sekolahId = null;
+        switch ($user->role) {
+            case 'guru':
+                $sekolahId = $user->guru->sekolah_id;
+            break;
+            case 'admin':
+                $sekolahId = $user->sekolah->sekolah_id;
+            break;
+        }
+    
         // mengambil data tahun ajaran
         $tahunAjaran = TahunPelajaran::with('kota_pembagian')->when(count($tahun_ajaran) > 1,function($sub) use($tahun_ajaran){
             $sub->where('start_tahun',$tahun_ajaran[0])
             ->where('end_tahun',$tahun_ajaran[1]);
         })
-        ->where('sekolah_id',$user->sekolah->id)
+        ->where('sekolah_id',$sekolahId)
         ->orderBy('id','DESC')
         ->paginate($length);
         return response()

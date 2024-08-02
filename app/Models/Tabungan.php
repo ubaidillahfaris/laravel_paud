@@ -16,4 +16,9 @@ class Tabungan extends Model
         'nominal_keluar',
         'total',
     ];
+
+    public function siswa(){
+        return $this->belongsTo(Siswa::class,'siswa_id','id');
+    }
+
 }

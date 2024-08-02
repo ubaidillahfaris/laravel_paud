@@ -124,13 +124,6 @@ Route::middleware('auth')
             Route::delete('delete/{id}','destroy')->name('delete');
         });
 
-        Route::prefix('riwayat_kelas')
-        ->name('riwayat_kelas.')
-        ->controller(RiwayatKelasController::class)
-        ->group(function(){
-            
-        });
-
         Route::name('program_layanan.')
         ->prefix('program_layanan')
         ->controller(ProgramLayananController::class)
@@ -169,16 +162,6 @@ Route::middleware('auth')
             });
         });
 
-
-        Route::prefix('tabungan')
-        ->name('tabungan.')
-        ->controller(TabunganController::class)
-        ->group(function(){
-            Route::post('mutasi_masuk','mutasiMasuk')->name('mutasi_masuk');
-            Route::post('mutasi_keluar','mutasiKeluar')->name('mutasi_keluar');
-            Route::put('update/{transaksi_id}','update')->name('update');
-            Route::delete('destroy/{transaksi_id}','destroy')->name('destroy');
-        });
         
     });
     /**
@@ -222,22 +205,39 @@ Route::middleware('auth')
     //  end gurur route
    
 
-
+    // route tagihan
     Route::prefix('tagihan')
     ->name('tagihan.')
     ->controller(TagihanController::class)
     ->group(function(){
-        Route::get('/','index')->name('index');
         Route::get('index','index')->name('index');
         Route::get('show','show')->name('show');
-
+        Route::get('create','create')->name('create');
 
         Route::post('store','store')->name('store');
+
+        Route::get('pembayaran/{id}','pembayaran_page')->name('pembayaran');
         Route::put('bayar/{id}','bayar')->name('bayar');
+        
         Route::put('validasi/{id}','validasi_pembayaran')->name('validasi_pembayaran');
         Route::delete('delete/{id}','destroy')->name('destroy');
         Route::get('show_siswa/{siswaId}','show_by_siswa_id')->name('show_by_siswa_id');
         Route::get('show_kelas/{kelasId}','show_by_kelas')->name('show_by_kelas');
+    });
+
+    // route tabungan
+    Route::prefix('tabungan')
+    ->name('tabungan.')
+    ->controller(TabunganController::class)
+    ->group(function(){
+
+        Route::get('index','index')->name('index');
+        Route::get('show','show')->name('show');
+
+        Route::post('mutasi_masuk','mutasiMasuk')->name('mutasi_masuk');
+        Route::post('mutasi_keluar','mutasiKeluar')->name('mutasi_keluar');
+        Route::put('update/{transaksi_id}','update')->name('update');
+        Route::delete('destroy/{transaksi_id}','destroy')->name('destroy');
     });
    
 
@@ -245,7 +245,11 @@ Route::middleware('auth')
     ->name('siswa.')
     ->controller(SiswaController::class)
     ->group(function(){
-        Route::get('show/{kelas_id}','show')->name('show');
+        // menampilkan data siswa berdasarkan id
+        Route::get('detail_siswa/{id}','detail_siswa')->name('detail_siswa'); 
+        
+        // menampilkan data siswa dalam kelas yang dipilih atau semua data siswa
+        Route::get('show/{kelas_id?}','show')->name('show');
         Route::get('/{kelas_id}','index')->name('index');
     });
 
@@ -256,7 +260,6 @@ Route::middleware('auth')
         Route::get('index','index')->name('index');
         Route::get('show','show')->name('show');
         Route::get('show_all','show_all')->name('show_all');
-
         Route::get('edit/{id}','edit')->name('edit');
         Route::put('update/{id}','update')->name('update');
         Route::get('create','create')->name('create');

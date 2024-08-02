@@ -5,21 +5,30 @@ namespace App\Http\Controllers;
 use App\Exceptions\BelowZeroTabungan;
 use App\Models\Tabungan;
 use App\Models\TransaksiTabungan;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 class TabunganController extends Controller
 {
+
+    protected $user;
+
+    public function __construct(Request $request) {
+        $this->user = $request->user();
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+
+        return Inertia::render('Tabungan/Index',[
+            'user_role' => $this->user->role
+        ]);
     }
 
     /**
@@ -36,7 +45,16 @@ class TabunganController extends Controller
      */
     public function mutasiMasuk(Request $request){
         DB::beginTransaction();
+        
+        
+        if ($this->user->role != 'guru' && $this->user->role != 'admin') {
+            return response()->json(['message' => 'unauthorized'],401);
+        }
+
+        
+        
         try {
+            
             $request->validate([
                 'siswa_id' => 'required',
                 'tahun_ajaran_id' => 'required',
@@ -45,7 +63,6 @@ class TabunganController extends Controller
                 'tanggal_transaksi' => 'required',
                 'keterangan' => 'required'
             ]);
-
             // add siswa_id data
             $data = $request->all();
 
@@ -74,7 +91,6 @@ class TabunganController extends Controller
         catch (ValidationException $th){
              // rollback
              DB::rollBack();
-            
              return response()
              ->json([
                  'message' => 'Gagal melakukan transaksi',
@@ -98,6 +114,9 @@ class TabunganController extends Controller
      */
     public function mutasiKeluar(Request $request){
         DB::beginTransaction();
+        if ($this->user->role != 'guru' && $this->user->role != 'admin') {
+            return response()->json(['message' => 'unauthorized'],401);
+        }
         try {
             $request->validate([
                 'siswa_id' => 'required',
@@ -163,7 +182,9 @@ class TabunganController extends Controller
      */
     public function store(Request $request, int $siswaId)
     {
-     
+        if ($this->user->role != 'guru' && $this->user->role != 'admin') {
+            return response()->json(['message' => 'unauthorized'],401);
+        }
         try {
             $request->validate([
                 'tahun_ajaran_id' => 'required',
@@ -212,9 +233,34 @@ class TabunganController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(int $siswaId)
+    public function show(Request $request)
     {
-        
+        $search = $request->searchQuery??null;
+        $kelas = $request->kelas??null;
+        $length = $request->length??10;
+
+        $tabungan = Tabungan::with('siswa')->when($search, function($sub) use($search) {
+            $sub->whereHas('siswa',function($subSiswa) use($search) {
+                $subSiswa->where('nama_lengkap','ilike',"%$search%");
+            });
+        })->when($kelas, function($sub) use($kelas) {
+            $sub->whereHas('siswa',function($subSiswa) use($kelas) {
+                $subSiswa->where('kelas_id',$kelas);
+            });
+        })
+        ->orderBy('created_at','desc')
+        ->paginate($length);
+
+        return response()
+        ->json($tabungan);
+    }
+
+    /**
+     * Show data by siswa id
+     */
+    public function show_by_id(int $id){
+        $tabungan = Tabungan::findOrFail($id);
+        return response()->json($tabungan);
     }
 
     /**
@@ -232,6 +278,9 @@ class TabunganController extends Controller
     {
 
         DB::beginTransaction();
+        if ($this->user->role != 'guru' && $this->user->role != 'admin') {
+            return response()->json(['message' => 'unauthorized'],401);
+        }
         try {
             
             $request->validate([
@@ -286,7 +335,7 @@ class TabunganController extends Controller
         DB::beginTransaction();
         try {
             // delete data transaksi
-            $dataTransaksi = TransaksiTabungan::where('id',$tabungan_id)->first();
+            $dataTransaksi = TransaksiTabungan::findOrFail($tabungan_id);
             $tempData = clone $dataTransaksi;
             $dataTransaksi->delete();
 

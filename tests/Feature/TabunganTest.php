@@ -47,7 +47,7 @@ class TabunganTest extends TestCase
         $user = User::where('role','admin')->first();
         $response = $this->actingAs($user)->put(route('tabungan.update',['transaksi_id' => 7]),[
             'jenis' => 'withdraw',
-            // 'mutasi_masuk' => 120000,
+            'mutasi_masuk' => null,
             'mutasi_keluar' => 120000,
             'tanggal_transaksi' => date('Y-m-d'),
             'keterangan' => 'tabungan pertama'

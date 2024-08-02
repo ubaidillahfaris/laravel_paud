@@ -35,7 +35,9 @@ class TagihanController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Tagihan/Create',[
+            'user_role' => $this->user->role
+        ]);
     }
 
     /**
@@ -123,7 +125,18 @@ class TagihanController extends Controller
     }
 
     public function showTagihanByOrtuNotPaid(Request $request){
-        $user = User::find(Auth::user()->id);
+        $user = $request->user();
+        $idWaliMurid = $user->id;
+        
+        $tagihan = Tagihan::with('siswa')
+        ->whereHas('siswa',function($sub) use($idWaliMurid){
+            $sub->where('ortu_id',$idWaliMurid);
+        })
+        ->whereNull('nominal_terbayar')
+        ->whereNull('tanggal_bayar')
+        ->get();
+
+        return $tagihan;
     }
 
     /**
@@ -156,12 +169,29 @@ class TagihanController extends Controller
 
 
     /**
+     * Show pembayaran page
+     * @param int $id
+     */
+    public function pembayaran_page(int $id){
+        // get tagihan
+        $tagihan = Tagihan::findOrFail($id);
+
+        // get siswa
+        $siswa = Siswa::findOrFail($tagihan->siswa_id);
+
+        return Inertia::render('Tagihan/Bayar',[
+            'tagihan' => $tagihan,
+            'siswa' => $siswa
+        ]);
+    }
+
+    /**
      * method Pembayaran tagihan
      */
     public function bayar(Request $request, int $id){
         try {
             $request->validate([
-                'nominal_terbayar'=> 'required',
+                'nominal_terbayar'=> 'required|numeric|min:10000',
                 'tanggal_bayar'=> 'required',
                 'gambar_faktur'=> 'required',
                 'tempat_bayar'=> 'nullable',
@@ -206,11 +236,7 @@ class TagihanController extends Controller
             ]);
         } 
         catch(ValidationException $th){
-            return response()
-            ->json([
-                'message' => 'Gagal melakukan pembayaran',
-                'detail' => $th->getMessage()
-            ],400);
+            throw $th;
         }
         catch (\Throwable $th) {
             return response()

@@ -8,12 +8,14 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class SiswaController extends Controller implements HasMiddleware
 {
 
     protected $sekolah_id;
+    protected $relation;
 
     public static function middleware(): array
     {
@@ -22,6 +24,17 @@ class SiswaController extends Controller implements HasMiddleware
 
     public function __construct(Request $request) {
         $this->sekolah_id = $request->attributes->get('sekolah_id');
+        $showKelas = $request->show_kelas??false;
+        $showKotaLahir = $request->show_kota_lahir??false;
+        $showTabungan = $request->show_tabungan??false;
+
+        // mapping param array untuk data relasi
+        $this->relation = array_filter([
+            $showKelas ? 'kelas' : null,
+            $showKotaLahir ? 'kota_lahir' : null,
+            $showTabungan ? 'tabungan' : null,
+        ]);
+
     }
 
     /**
@@ -84,8 +97,13 @@ class SiswaController extends Controller implements HasMiddleware
         $length = $request->length??10;
         $tahunAjaran = $request->tahun_ajaran??null;
         $sekolah_id = $this->sekolah_id;
-
-        $siswa = Siswa::with('kelas','kota_lahir','tabungan')
+        
+        // base query
+        Log::info($this->relation);
+        $siswa = Siswa::with($this->relation)
+        ->when($search, function($sub) use($search){
+            $sub->whereAny(['nama_lengkap','nama_panggilan'],'ilike',"%$search%");
+        })
         ->whereHas('kelas',function($sub) use($sekolah_id){
             $sub->where('sekolah_id',$sekolah_id);
         })
@@ -99,5 +117,18 @@ class SiswaController extends Controller implements HasMiddleware
         return response()
         ->json($siswa);
 
+    }
+
+
+    /**
+     * show data siswa by id
+     */
+    public function detail_siswa(int $id){
+        try {
+            $siswa = Siswa::with($this->relation)->findOrFail($id);
+            return response()->json($siswa);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

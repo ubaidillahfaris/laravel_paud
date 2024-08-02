@@ -10,7 +10,9 @@ use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\SurveyAsesmenController;
 use App\Http\Controllers\SurveyAsesmenJawabanController;
+use App\Http\Controllers\TabunganController;
 use App\Http\Controllers\TagihanController;
+use App\Http\Controllers\TahunPelajaranController;
 use App\Http\Controllers\WilayahController;
 use App\Models\SurveyAsesmen;
 use Illuminate\Support\Facades\Route;
@@ -21,13 +23,7 @@ Route::post('/register',[RegisteredUserController::class,'registerApi']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::prefix('wilayah')
-    ->controller(WilayahController::class)
-    ->group(function(){
-        Route::get('kota/{slug?}','kota');
-    });
-
-
+    // Group route guru
     Route::prefix('guru')
     ->middleware('role:guru')
     ->group(function(){
@@ -54,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     });
 
+    // Group route wali meurid
     Route::prefix('wali')
     ->middleware('role:wali')
     ->group(function(){
@@ -88,19 +85,12 @@ Route::middleware('auth:sanctum')->group(function () {
             
         });
 
-        Route::prefix('keuangan')
-        ->name('keuangan.')
+        Route::prefix('tagihan')
+        ->name('tagihan.')
+        ->controller(TagihanController::class)
         ->group(function(){
-
-            Route::prefix('tagihan')
-            ->name('tagihan.')
-            ->controller(TagihanController::class)
-            ->group(function(){
-                Route::get('tagihan_by_ortu','showTagihanByOrtuNotPaid')->name('tagihan_by_ortu');
-            });
-
+            Route::get('tagihan_by_ortu','showTagihanByOrtuNotPaid')->name('tagihan_by_ortu');
         });
-
 
         Route::prefix('orang_tua')
         ->controller(OrangTuaController::class)
@@ -108,6 +98,32 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('data/{user_id}','data');
         });
 
+    });
+
+
+    Route::prefix('wilayah')
+    ->controller(WilayahController::class)
+    ->group(function(){
+        Route::get('kota/{slug?}','kota');
+    });
+
+
+    Route::prefix('tahun_ajaran')
+    ->controller(TahunPelajaranController::class)
+    ->group(function(){
+        Route::get('show','show');
+        Route::get('active','showAll');
+    });
+
+    // tabungan route
+    Route::prefix('tabungan')
+    ->controller(TabunganController::class)
+    ->group(function(){
+        Route::post('deposit','mutasiMasuk');
+        Route::post('withdraw','mutasiKeluar');
+        Route::put('update/{transaksi_id}','update');
+        Route::delete('delete/{tabungan_id}','destroy');
+        Route::get('tabungan_siswa/{id}','show_by_id');
     });
 
     Route::post('/logout', [LoginController::class, 'logoutApi']);
