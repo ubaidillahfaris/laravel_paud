@@ -4,13 +4,13 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostAsesmenCeklis extends FormRequest
+class PostAsesmenCatatanAnekdotRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
-    {   
+    {
         return true;
     }
 
@@ -25,9 +25,13 @@ class PostAsesmenCeklis extends FormRequest
             'siswa_id' => ['required','exists:siswas,id'],
             'rpph_id' => ['required','exists:rpphs,id'],
             'tahun_ajaran_id' => ['required','exists:tahun_pelajarans,id'],
-            'konteks' => ['required'],
-            'penilaian' => ['required','in:Belum Muncul,Sudah Muncul'],
-            'kejadian_teramati' => 'required',
+            'jam' => ['required'],
+            'tempat_kejadian' => ['required'],
+            'deskripsi_peristiwa' => ['required'],
+            'nilai_agama_budi_pekerti' => ['required'],
+            'jati_diri' => ['required'],
+            'literasi_steam' => ['required'],
+            'umpan_balik' => ['required']
         ];
     }
 }

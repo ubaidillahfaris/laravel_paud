@@ -4,13 +4,13 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostAsesmenCeklis extends FormRequest
+class PostAsesmenFotoBerseriFileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
-    {   
+    {
         return true;
     }
 
@@ -22,12 +22,9 @@ class PostAsesmenCeklis extends FormRequest
     public function rules(): array
     {
         return [
-            'siswa_id' => ['required','exists:siswas,id'],
-            'rpph_id' => ['required','exists:rpphs,id'],
-            'tahun_ajaran_id' => ['required','exists:tahun_pelajarans,id'],
-            'konteks' => ['required'],
-            'penilaian' => ['required','in:Belum Muncul,Sudah Muncul'],
-            'kejadian_teramati' => 'required',
+            'asesmen_foto_id' => ['required','exists:asesmen_foto_berseris,id'],
+            'foto' => ['required','image'],
+            'deskripsi' => ['nullable'],
         ];
     }
 }

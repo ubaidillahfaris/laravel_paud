@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('rpph_id')->constrained('rpphs')->onDelete('Cascade')->onUpdate('Cascade');
             $table->foreignId('tahun_ajaran_id')->constrained('tahun_pelajarans')->onDelete('Cascade')->onUpdate('Cascade');
             $table->string('konteks');
-            $table->enum('penilaian', ['Belum Muncul', 'Sudah Muncul']);
+            $table->string('penilaian');
             $table->string('kejadian_teramati');
             $table->timestamps();
             $table->softDeletes();

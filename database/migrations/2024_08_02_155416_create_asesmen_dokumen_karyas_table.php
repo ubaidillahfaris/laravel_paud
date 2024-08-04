@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('siswa_id')->references('id')->on('siswas')->onDelete('Cascade')->onUpdate('Cascade');
             $table->foreignId('rpph_id')->references('id')->on('rpphs')->onDelete('Cascade')->onUpdate('Cascade');
-            $table->foreignId('siswa_tahun_ajaran_idid')->references('id')->on('tahun_pelajarans')->onDelete('Cascade')->onUpdate('Cascade');
+            $table->foreignId('tahun_ajaran_id')->references('id')->on('tahun_pelajarans')->onDelete('Cascade')->onUpdate('Cascade');
             $table->string('foto');
             $table->string('deskripsi')->nullable();
             $table->string('nilai_agama_budi_pekerti')->nullable();

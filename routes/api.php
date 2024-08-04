@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\AsesmenCatatanAnekdotController;
+use App\Http\Controllers\AsesmenCeklisController;
+use App\Http\Controllers\AsesmenDokumenKaryaController;
+use App\Http\Controllers\AsesmenFotoBerseriController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\KelasController;
@@ -14,7 +18,6 @@ use App\Http\Controllers\TabunganController;
 use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TahunPelajaranController;
 use App\Http\Controllers\WilayahController;
-use App\Models\SurveyAsesmen;
 use Illuminate\Support\Facades\Route;
 
 
@@ -124,6 +127,56 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('update/{transaksi_id}','update');
         Route::delete('delete/{tabungan_id}','destroy');
         Route::get('tabungan_siswa/{id}','show_by_id');
+    });
+
+
+    // asesmen route
+    Route::prefix('asesmen')
+    ->group(function(){
+
+        // asesmen ceklis
+        Route::prefix('ceklis')
+        ->controller(AsesmenCeklisController::class)
+        ->group(function(){
+            Route::put('update/{id}','update');
+            Route::post('store','store');
+            Route::get('show_by_id/{id}','show_by_id');
+            Route::delete('delete/{asesmen_ceklis}','destroy');
+        });
+
+        // asesmen catatan anekdot
+        Route::prefix('catatan_anekdot')
+        ->controller(AsesmenCatatanAnekdotController::class)
+        ->group(function(){
+            Route::put('update/{id}','update');
+            Route::post('store','store');
+            Route::get('show','show');
+            Route::get('show_by_id/{id}','show_by_id');
+            Route::delete('delete/{asesmen_ceklis}','destroy');
+        });
+
+        // asesmen foto berseri
+        Route::prefix('dokumen_karya')
+        ->controller(AsesmenDokumenKaryaController::class)
+        ->group(function(){
+            Route::put('update/{id}','update');
+            Route::post('store','store');
+            Route::get('show','show');
+            Route::get('show_by_id/{id}','show_by_id');
+            Route::delete('delete/{asesmen_ceklis}','destroy');
+        });
+
+        // asesmen foto berseri
+        Route::prefix('foto_berseri')
+        ->controller(AsesmenFotoBerseriController::class)
+        ->group(function(){
+            Route::put('update/{id}','update');
+            Route::post('store','store');
+            Route::get('show','show');
+            Route::get('show_by_id/{id}','show_by_id');
+            Route::delete('delete/{asesmen_ceklis}','destroy');
+        });
+
     });
 
     Route::post('/logout', [LoginController::class, 'logoutApi']);
