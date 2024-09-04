@@ -66,7 +66,7 @@ class PresensiController extends Controller
             ->json([
                 'message' => 'Gagal menampilkan data presensi',
                 'detail' => $th->getMessage()
-            ]);
+            ],404);
         }
     }
 

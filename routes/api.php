@@ -60,7 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->controller(PresensiController::class)
         ->group(function(){
             Route::get('show_all','show_all')->name('show_all');
-            Route::get('show','show')->name('show');
+            Route::get('show/{presensiId}','show')->name('show');
             Route::post('store','store')->name('store');
             Route::put('update/{presensiId}','update')->name('update');
             Route::delete('delete/{presensiId}','destroy')->name('delete');
