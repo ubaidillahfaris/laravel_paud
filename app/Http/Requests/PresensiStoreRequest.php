@@ -35,6 +35,7 @@ class PresensiStoreRequest extends FormRequest
                     $exists = Presensi::where('siswa_id', $value)
                         ->where('kelas_id', $this->kelas_id)
                         ->where('tahun_ajaran_id', $this->tahun_ajaran_id)
+                        ->whereNotNull('deleted_at')
                         ->exists();
                     if ($exists) {
                         $fail('Data presensi dengan kombinasi siswa_id, kelas_id, dan tahun ajaran ini sudah ada.');

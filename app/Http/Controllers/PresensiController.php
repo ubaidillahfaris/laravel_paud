@@ -32,7 +32,7 @@ class PresensiController extends Controller
      */
     public function store(PresensiStoreRequest $request)
     {
-        // $data = $request->validated();
+        $data = $request->validated();
         try {
         
             $userId = Auth::user()->id;
@@ -59,7 +59,8 @@ class PresensiController extends Controller
     public function show($presensiId)
     {
         try {
-            $presensi = Presensi::findOrFail($presensiId);
+            $presensi = Presensi::with('siswa','kelas','tahun_ajaran','created_by')
+            ->findOrFail($presensiId);
             return response()->json($presensi);
         } catch (\Throwable $th) {
             return response()
