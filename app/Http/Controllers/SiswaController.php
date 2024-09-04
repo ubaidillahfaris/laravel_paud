@@ -119,6 +119,7 @@ class SiswaController extends Controller implements HasMiddleware
 
     }
 
+    
 
     /**
      * show data siswa by id

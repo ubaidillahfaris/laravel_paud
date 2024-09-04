@@ -11,7 +11,14 @@ class TahunPelajaran extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'sekolah_id','start_tahun','end_tahun','semester','id_kota_pembagian_raport','tanggal_pembagian_raport','is_active','created_by'
+        'sekolah_id',
+        'start_tahun',
+        'end_tahun',
+        'semester',
+        'id_kota_pembagian_raport',
+        'tanggal_pembagian_raport',
+        'is_active',
+        'created_by'
     ];
 
     public function kota_pembagian(){

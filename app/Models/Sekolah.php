@@ -56,4 +56,8 @@ class Sekolah extends Model
     public function kurikulum(){
         return $this->hasOneThrough(Kurikulum::class,KurikulumSekolah::class,'sekolah_id','id','kurikulum_id','id');
     }
+
+    public function tahun_pelajaran(){
+        return $this->hasOne(TahunPelajaran::class,'sekolah_id','id');
+    }
 }

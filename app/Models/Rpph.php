@@ -18,6 +18,9 @@ class Rpph extends Model
         'sumber_belajar','alat_bahan',
     ];
 
+    public function siswa(){
+        return $this->hasManyThrough(Siswa::class, Kelas::class,'id','kelas_id','kelas_id','id');
+    }
 
     public function guru(){
         return $this->hasOne(User::class,'id','guru_id');
@@ -37,5 +40,21 @@ class Rpph extends Model
 
     public function kegiatan(){
         return $this->hasMany(KegiatanRpph::class,'rpph_id','id');
+    }
+
+    public function asesmen_ceklis(){
+        return $this->hasMany(AsesmenCeklis::class,'rpph_id','id');
+    }
+
+    public function asesmen_catatan_anekdot(){
+        return $this->hasMany(AsesmenCatatanAnekdot::class,'rpph_id','id');
+    }
+
+    public function asesmen_dokumen_hasil_karya(){
+        return $this->hasMany(AsesmenDokumenKarya::class,'rpph_id','id');
+    }
+
+    public function asesmen_foto_berseri(){
+        return $this->hasMany(AsesmenFotoBerseri::class,'rpph_id','id');
     }
 }
