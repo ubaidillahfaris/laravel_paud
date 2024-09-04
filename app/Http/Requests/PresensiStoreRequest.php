@@ -30,7 +30,7 @@ class PresensiStoreRequest extends FormRequest
             'status' => ['required','in:hadir,tidak hadir,ijin,sakit'],
             'siswa_id' => [
                 'required',
-                'exists:siswa,id',
+                'exists:siswas,id',
                 function ($attribute, $value, $fail) {
                     $exists = Presensi::where('siswa_id', $value)
                         ->where('kelas_id', $this->kelas_id)
@@ -54,6 +54,7 @@ class PresensiStoreRequest extends FormRequest
             'tahun_ajaran_id.required' => 'ID tahun ajaran wajib diisi.',
             'tahun_ajaran_id.exists' => 'Tahun ajaran tidak ditemukan',
             'tanggal.required' => 'Tanggal wajib diisi.',
+            'tanggal.date' => 'Tanggal harus valid.',
             'status.required' => 'Status wajib diisi.',
             'status.in' => 'Status harus berupa salah satu dari: hadir, tidak hadir, ijin, atau sakit.',
         ];

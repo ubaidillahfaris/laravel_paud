@@ -32,11 +32,11 @@ class PresensiController extends Controller
      */
     public function store(PresensiStoreRequest $request)
     {
-        $data = $request->validated();
-        $user = Auth::user()->id;
-        $data['created_by'] = $user->id;
-
+        // $data = $request->validated();
         try {
+        
+            $userId = Auth::user()->id;
+            $data['created_by'] = $userId;
             
             Presensi::create($data);
             return response()
@@ -136,10 +136,11 @@ class PresensiController extends Controller
      */
     public function update(PresensiUpdaterequest $request, $presensiId)
     {
-        $data = array_filter($request->validated());
+        $data = $request->validated();
         try {
             $presensi = Presensi::findOrFail($presensiId);
             $presensi->update($data);
+            $presensi->save();
 
             return response()
             ->json([
@@ -160,7 +161,7 @@ class PresensiController extends Controller
     public function destroy($presensiId)
     {
         try {
-            Presensi::findOrFail($presensiId);
+            Presensi::findOrFail($presensiId)->delete();
             return response()
             ->json([
                 'message' => 'Berhasil menghapus data presensi'
