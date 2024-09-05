@@ -12,18 +12,8 @@ use Inertia\Inertia;
 class ProgramLayananController extends Controller
 {
 
-    protected $sekolah;
-
     public function __construct() {
-        try {
-            $user = User::where('id',Auth::user()->id)
-            ->with('sekolah')
-            ->first();
-
-            $this->sekolah = $user->sekolah;
-        } catch (\Throwable $th) {
-            abort(400);
-        }
+        parent::__construct();
     }
 
     /**

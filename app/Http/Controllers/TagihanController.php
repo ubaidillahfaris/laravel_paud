@@ -14,10 +14,8 @@ use Inertia\Inertia;
 class TagihanController extends Controller
 {
 
-    protected $user;
-
     public function __construct(Request $request) {
-        $this->user = $request->user();
+        parent::__construct();
     }
 
     /**

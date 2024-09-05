@@ -5,10 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PostPortofolioSiswaRequest;
 use App\Http\Requests\UpdatePortofolioSiswaRequest;
 use App\Models\PortofolioSiswa;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PortofolioSiswaController extends Controller
 {
+
+    public function __construct() {
+       parent::__construct();
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -63,6 +70,32 @@ class PortofolioSiswaController extends Controller
                 'detail' => $th->getMessage()
             ],500);
         }
+    }
+
+    /**
+     * Display paginated data
+     */
+    public function show_all(Request $request){
+        $length = $request->length??10;
+        $search = $request->search??null;
+        $kelas = $request->kelas != null ? [$request->kelas] : /** set to array  **/
+        $this->kelas->pluck('id');
+        $tahun_ajaran = $request->tahun_ajaran??$this->tahunAjaranAktif->id;
+        
+        
+        $portofolioSiswa = PortofolioSiswa::with('siswa','kelas','tahun_ajaran')
+        ->when($search, function($sub)use($search){
+            $sub->whereHas('siswa',function($subSiswa)use($search){
+                $subSiswa->whereAny(['nama_lengkap','nama_panggilan','nik',],'ilike',"%$search%");
+            });
+        })
+        ->when($kelas != null, function($sub)use($kelas){;
+            $sub->whereIn('kelas_id',$kelas);
+        })
+        ->where('tahun_ajaran_id',$tahun_ajaran)
+        ->paginate($length);
+
+        return response()->json($portofolioSiswa);
     }
 
     /**

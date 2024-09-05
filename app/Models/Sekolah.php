@@ -53,6 +53,10 @@ class Sekolah extends Model
         return $this->hasMany(AdminSekolah::class,'sekolah_id','id');
     }
 
+    public function kelas(){
+        return $this->hasMany(Kelas::class,'sekolah_id','id');
+    }
+
     public function kurikulum(){
         return $this->hasOneThrough(Kurikulum::class,KurikulumSekolah::class,'sekolah_id','id','kurikulum_id','id');
     }

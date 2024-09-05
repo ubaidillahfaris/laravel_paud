@@ -15,10 +15,8 @@ use Inertia\Inertia;
 class TabunganController extends Controller
 {
 
-    protected $user;
-
     public function __construct(Request $request) {
-        $this->user = $request->user();
+        parent::__construct();
     }
     /**
      * Display a listing of the resource.

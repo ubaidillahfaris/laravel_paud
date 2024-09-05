@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\OrangTuaController;
+use App\Http\Controllers\PortofolioSiswaController;
 use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\PpdbMasterController;
 use App\Http\Controllers\PresensiController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\TabunganController;
 use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TahunPelajaranController;
 use App\Http\Controllers\WilayahController;
+use App\Models\PortofolioSiswa;
 use App\Models\Presensi;
 use Illuminate\Support\Facades\Route;
 
@@ -64,6 +66,16 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('store','store')->name('store');
             Route::put('update/{presensiId}','update')->name('update');
             Route::delete('delete/{presensiId}','destroy')->name('delete');
+        });
+
+        Route::prefix('portofolio_siswa')
+        ->controller(PortofolioSiswaController::class)
+        ->group(function(){
+            Route::get('show/{portofolioId}','show');
+            Route::get('show_all','show_all');
+            Route::post('store','store');
+            Route::put('update/{portofolioId}','update');
+            Route::delete('delete/{portofolioId}','destroy');
         });
     });
 
