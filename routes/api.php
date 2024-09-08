@@ -31,6 +31,17 @@ Route::post('/register',[RegisteredUserController::class,'registerApi']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
+
+    // route user
+    Route::prefix('user')
+    ->name('user.')
+    ->controller(\App\Http\Controllers\UserController::class)
+    ->group(function(){
+        Route::put('{userId}', 'update')->name('update');
+        Route::delete('{userId}', 'destroy')->name('destroy');
+    });
+
+
     // Group route guru
     Route::prefix('guru')
     ->middleware('role:guru')

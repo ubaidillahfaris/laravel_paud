@@ -35,6 +35,13 @@ class UserController extends Controller
     }
 
     
+    /**
+     * Deletes a user by ID.
+     *
+     * @param int $userId The ID of the user to delete
+     * @throws \Throwable If the user cannot be deleted
+     * @return \Illuminate\Http\JsonResponse A JSON response with a success or failure message
+     */
     public function destroy($userId)
     {
         try {
