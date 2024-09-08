@@ -84,4 +84,8 @@ class Siswa extends Model
     public function portofolio_siswa(){
         return $this->hasMany(PortofolioSiswa::class,'siswa_id','id');
     }
+
+    public function presensi(){
+        return $this->hasMany(Presensi::class,'siswa_id','id');
+    }
 }

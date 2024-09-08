@@ -15,16 +15,13 @@ use Inertia\Inertia;
 
 class KelasController extends Controller implements HasMiddleware
 {
-
-    protected $sekolah_id;
-
     public static function middleware(): array
     {
         return ['sekolah'];
     }
 
-    public function __construct(Request $request) {
-        $this->sekolah_id = $request->attributes->get('sekolah_id');
+    public function __construct() {
+        parent::__construct();
     }
 
     public function index(){
@@ -81,7 +78,7 @@ class KelasController extends Controller implements HasMiddleware
      */
     protected function baseQuery()
     {
-        return Kelas::where('sekolah_id', $this->sekolah_id)
+        return Kelas::where('sekolah_id', $this->sekolah->id)
         ->whereHas('tahun_ajaran', function ($query) {
             $query->where('is_active', true);
         });
