@@ -85,11 +85,11 @@ export default {
         SearchInput,KelasList
     },
     async created() {
-        if (this.user_role == 'admin') {
-        this.LayoutComponent = (await import('@/Layouts/Admin/Layout.vue')).default;
-        } else {
-        this.LayoutComponent = (await import('@/Layouts/Guru/Layout.vue')).default;
-        }
+        const layoutPath = this.userRole === 'admin'
+            ? '@/Layouts/Admin/Layout.vue'
+            : '@/Layouts/Guru/Layout.vue';
+
+        this.LayoutComponent = (await import(layoutPath)).default;
     },
     data() {
         return {

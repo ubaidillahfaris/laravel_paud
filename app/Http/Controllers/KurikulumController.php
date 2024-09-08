@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kurikulum;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 class KurikulumController extends Controller
 {
@@ -12,7 +13,19 @@ class KurikulumController extends Controller
      * Show index page
      */
     public function index(){
+        return Inertia::render('Kurikulum/Index');
+    }
 
+    
+    /**
+     * Edit page
+     */
+    public function edit($kurikulumId)
+    {
+        $kurikulum = Kurikulum::findOrfail($kurikulumId);
+        return Inertia::render('Kurikulum/Edit', [
+            'kurikulum' => $kurikulum
+        ]);
     }
 
     /**

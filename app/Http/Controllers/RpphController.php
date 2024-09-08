@@ -17,7 +17,11 @@ use Inertia\Inertia;
 class RpphController extends Controller
 {
 
-
+    
+    public function __construct()
+    {
+        parent::__construct();
+    }
     /**
      * index page
      */
@@ -29,16 +33,20 @@ class RpphController extends Controller
      * Create page
      */
     public function create(KelasController $kelasController){
-        $user_guru = Auth::user();
-        $sekolahId = $user_guru->guru->sekolah_id;
-        $kelas = $kelasController->show_kelas_by_sekolah($sekolahId);
-        $kurikulum = KurikulumSekolah::where('sekolah_id',$sekolahId)->first();
-        
-        return Inertia::render('Rpph/Create',[
-            'guru' => $user_guru,
-            'kelas' => $kelas,
-            'kurikulum' => $kurikulum->kurikulum
-        ]);
+        try {
+            $user_guru = Auth::user();
+            $sekolahId = $user_guru->guru->sekolah_id;
+            $kelas = $kelasController->show_kelas_by_sekolah($sekolahId);
+            $kurikulum = KurikulumSekolah::where('sekolah_id',$sekolahId)->first();
+            
+            return Inertia::render('Rpph/Create',[
+                'guru' => $user_guru,
+                'kelas' => $kelas,
+                'kurikulum' => $kurikulum->kurikulum
+            ]);
+        } catch (\Throwable $th) {
+            abort(500);
+        }
     }
 
 
