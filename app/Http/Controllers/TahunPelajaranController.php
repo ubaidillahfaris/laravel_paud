@@ -117,7 +117,7 @@ class TahunPelajaranController extends Controller
                 $sekolahId = $user->guru->sekolah_id;
             break;
             case 'admin':
-                $sekolahId = $user->sekolah->sekolah_id;
+                $sekolahId = $user->sekolah->id;
             break;
         }
     

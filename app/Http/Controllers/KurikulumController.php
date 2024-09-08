@@ -18,27 +18,63 @@ class KurikulumController extends Controller
 
     
     /**
-     * Edit page
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
      */
-    public function edit($kurikulumId)
+    public function create()
     {
-        $kurikulum = Kurikulum::findOrfail($kurikulumId);
-        return Inertia::render('Kurikulum/Edit', [
+        return Inertia::render('Kurikulum/Create');
+    }
+    
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $kurikulum = Kurikulum::find($id);
+
+        if (!$kurikulum) {
+            abort(404);
+        }
+
+        return Inertia::render('Kurikulum/Show', [
             'kurikulum' => $kurikulum
         ]);
+    }
+
+
+    public function show_all(Request $request){
+        $length = $request->length??10;
+        $search = $request->search??null;
+        $sekolah = $this->sekolah;
+
+        $kurikulum = Kurikulum::where('sekolah_id',$sekolah->id)
+        ->when($search != null, function($sub)use($search){
+            $sub->where('name','ilike',"%$search%");
+        })
+        ->paginate($length);
+
+        return response()->json($kurikulum);
     }
 
     /**
      * Store data 
      */
     public function store(Request $request){
+        $data = $request->validate([
+            'name' => 'required',
+            'is_active' => 'required',
+            'curriculum_start_date' => 'nullablle',
+            'curriculum_end_date' => 'nullablle'
+        ]);
+
+        $data['sekolah_id'] = $this->sekolah->id;
+
         try {
-            $data = $request->validate([
-                'name' => 'required',
-                'is_active' => 'required',
-                'curriculum_start_date' => 'nullablle',
-                'curriculum_end_date' => 'nullablle'
-            ]);
     
             Kurikulum::create($data);
             return response()
@@ -67,10 +103,13 @@ class KurikulumController extends Controller
      * Update data by id
      */
     public function update(Request $request, int $kurikulumId){
-        try {
-            $data = $request->all();
-            $data = array_filter($data);
 
+        $data = $request->validate([
+            'name' => 'required',
+            'is_active' => 'required',
+        ]);
+        try {
+            
             Kurikulum::where('id',$kurikulumId)
             ->update($data);
 

@@ -8,6 +8,7 @@ use App\Models\Sekolah;
 use App\Models\TahunPelajaran;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class Controller
@@ -54,6 +55,7 @@ class Controller
                 }
             }
         } catch (\Throwable $th) {
+            Log::error($th->getMessage(), [$th]);
             Auth::logout();
             abort(500);
         }
