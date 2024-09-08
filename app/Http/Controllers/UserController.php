@@ -33,4 +33,20 @@ class UserController extends Controller
             ],500);
         }
     }
+
+    
+    public function destroy($userId)
+    {
+        try {
+            $user = User::findOrFail($userId);
+            $user->delete();
+            return response()->json(['message' => 'Berhasil menghapus user']);
+        } catch (\Throwable $th) {
+            return response()
+            ->json([
+                'message' => 'Gagal menghapus user',
+                'detail' => $th->getMessage()
+            ],500);
+        }
+    }
 }
