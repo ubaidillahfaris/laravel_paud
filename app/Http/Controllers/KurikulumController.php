@@ -67,7 +67,7 @@ class KurikulumController extends Controller
     public function store(Request $request){
         $data = $request->validate([
             'name' => 'required',
-            'is_active' => 'required',
+            'is_active' => 'nullable',
             'curriculum_start_date' => 'nullablle',
             'curriculum_end_date' => 'nullablle'
         ]);
@@ -75,6 +75,10 @@ class KurikulumController extends Controller
         $data['sekolah_id'] = $this->sekolah->id;
 
         try {
+
+            if ($data['is_active'] == null || $data['is_active' == false]) {
+                $this->deactivateBySekolahId($this->sekolah->id);
+            }
     
             Kurikulum::create($data);
             return response()
@@ -106,10 +110,15 @@ class KurikulumController extends Controller
 
         $data = $request->validate([
             'name' => 'required',
-            'is_active' => 'required',
+            'is_active' => 'nullable',
         ]);
         try {
             
+            if ($data['is_active'] == null || $data['is_active' == false]) {
+                $this->deactivateBySekolahId($this->sekolah->id);
+            }
+
+
             Kurikulum::where('id',$kurikulumId)
             ->update($data);
 
@@ -125,6 +134,23 @@ class KurikulumController extends Controller
             ],500);
         }
     }
+
+
+    
+    /**
+     * Deactivate kurikulum by sekolah_id
+     */
+    public function deactivateBySekolahId(int $sekolahId){
+        try {
+            Kurikulum::where('sekolah_id',$sekolahId)
+            ->update(['is_active' => false]);
+
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    
 
     /**
      * delete kurikulum by id
