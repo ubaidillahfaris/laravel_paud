@@ -79,7 +79,7 @@ class PresensiController extends Controller
         $length = $request->length??10;
         $date = $request->date??null;
         $siswa = null;
-        $tahunAjaran = $request->tahun_ajaran??null;
+        $tahunAjaran = $request->tahun_ajaran??$this->tahunAjaranAktif->id;
         $kelas = null;
         $status = $request->status??null;
         $created_by = $request->created_by??null;
@@ -97,17 +97,13 @@ class PresensiController extends Controller
 
         $kelas = $request->kelas ?? $userSekolah->kelas_id;
         
-        $siswa = Siswa::with('presensi')->whereHas('kelas',function($sub)use($kelas){
+        $siswa = Siswa::with('kota_lahir','kelas','presensi')->whereHas('kelas',function($sub)use($kelas){
             $sub->where('id',$kelas);
         })
-        ->when($date != null,function($sub)use($date){
-            $sub->whereHas('presensi',function($subKelas)use($date){
-                $subKelas->where('tanggal',$date);
-            });
-        })
-        ->when($tahunAjaran != null, function($sub)use($tahunAjaran){
-            $sub->whereHas('presensi',function($subPresensi)use($tahunAjaran){
-                $subPresensi->where('tahun_ajaran_id',$tahunAjaran);
+        ->when($date != null || $tahunAjaran != null,function($sub)use($date,$tahunAjaran){
+            $sub->with('presensi',function($subKelas)use($date,$tahunAjaran){
+                $subKelas->where('tanggal',$date)
+                ->where('tahun_ajaran_id',$tahunAjaran);
             });
         })
         ->paginate($length);

@@ -88,6 +88,14 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::put('update/{portofolioId}','update');
             Route::delete('delete/{portofolioId}','destroy');
         });
+
+        Route::prefix('tahun_ajaran')
+        ->name('tahun_ajaran.')
+        ->controller(TahunPelajaranController::class)
+        ->group(function(){
+            Route::get('show','show')->name('show');
+            Route::get('show_all','showAll')->name('show_all');
+        });
     });
 
     // Group route wali meurid

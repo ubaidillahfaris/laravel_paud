@@ -81,7 +81,7 @@ class TahunPelajaranController extends Controller
         }
     }
 
-    public function showAll(Request $request){
+    public function show(Request $request){
          // mengambil data sekolah user request
         $user = $request->user();
         $sekolahId = null;
@@ -103,7 +103,7 @@ class TahunPelajaranController extends Controller
         ->json($tahunAjaran);
     }
 
-    public function show(Request $request){
+    public function showAll(Request $request){
         // parameter
         $length = $request->length??10;
         $getTahunAjaran = $request->tahun_ajaran??null;
@@ -129,6 +129,8 @@ class TahunPelajaranController extends Controller
         ->where('sekolah_id',$sekolahId)
         ->orderBy('id','DESC')
         ->paginate($length);
+
+
         return response()
         ->json($tahunAjaran);
     }

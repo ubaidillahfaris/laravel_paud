@@ -86,6 +86,6 @@ class Siswa extends Model
     }
 
     public function presensi(){
-        return $this->hasMany(Presensi::class,'siswa_id','id');
+        return $this->hasOne(Presensi::class,'siswa_id','id')->latest('tanggal');
     }
 }
