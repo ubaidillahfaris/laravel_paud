@@ -123,7 +123,7 @@ export default {
         async fetchData(urlParam){
             let url;
             if (!url) {
-                url = route('tahun_ajaran.show',{
+                url = route('tahun_ajaran.show_all',{
                     _query:{
                         length: this.selectedLength
                     }

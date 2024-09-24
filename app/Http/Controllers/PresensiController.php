@@ -39,7 +39,15 @@ class PresensiController extends Controller
             $userId = Auth::user()->id;
             $data['created_by'] = $userId;
             
-            Presensi::create($data);
+            Presensi::updateOrCreate(
+                [
+                    'siswa_id' => $data['siswa_id'],
+                    'kelas_id' => $data['kelas_id'],
+                    'tanggal' => $data['tanggal'],
+                    'tahun_ajaran_id' => $data['tahun_ajaran_id']
+                ],
+                $data
+            );
             return response()
             ->json([
                 'message' => 'Berhasil membuat presensi'
@@ -97,7 +105,8 @@ class PresensiController extends Controller
 
         $kelas = $request->kelas ?? $userSekolah->kelas_id;
         
-        $siswa = Siswa::with('kota_lahir','kelas','presensi')->whereHas('kelas',function($sub)use($kelas){
+        $siswa = Siswa::with('kota_lahir','kelas','presensi')
+        ->whereHas('kelas',function($sub)use($kelas){
             $sub->where('id',$kelas);
         })
         ->when($date != null || $tahunAjaran != null,function($sub)use($date,$tahunAjaran){

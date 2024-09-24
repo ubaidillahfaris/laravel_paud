@@ -11,7 +11,6 @@ use App\Http\Controllers\KurikulumController;
 use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\PpdbMasterController;
 use App\Http\Controllers\ProgramLayananController;
-use App\Http\Controllers\RiwayatKelasController;
 use App\Http\Controllers\RpphController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\SiswaController;
@@ -143,9 +142,9 @@ Route::middleware('auth')
         ->controller(ProgramLayananController::class)
         ->group(function(){
             Route::get('index','index')->name('index');
-            Route::get('data','data')->name('data');
+            // Route::get('data','data')->name('data');
             Route::post('store','store')->name('store');
-            Route::get('show/{id}','show')->name('show');
+            Route::get('show','show')->name('show');
             Route::put('update/{id}','update')->name('update');
             Route::delete('delete/{id}','destroy')->name('delete');
         });
