@@ -19,6 +19,13 @@ class PortofolioSiswa extends Model
         'deskripsi'
     ];
 
+    
+    protected $appends = ['foto_url'];
+
+    public function getFotoUrlAttribute(){
+        return env('APP_URL').'/storage/images/portofolio/'.$this->foto;
+    }
+
     public function siswa(){
         return $this->hasOne(Siswa::class,'id','siswa_id');
     }

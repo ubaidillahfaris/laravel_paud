@@ -39,7 +39,13 @@ class PortofolioSiswaController extends Controller
     {
         $data = $request->validated();
         try {
-
+            if ($request->file('foto')) {
+                $file = $request->file('foto');
+                $filename = $file->getClientOriginalName();
+                $file->storeAs('public/images/portofolio', $filename);
+                $data['foto'] = $filename;
+            }
+            
             PortofolioSiswa::create($data);
 
             return response()

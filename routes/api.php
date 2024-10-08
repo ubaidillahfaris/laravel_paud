@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AcademicCalendarController;
 use App\Http\Controllers\AsesmenCatatanAnekdotController;
 use App\Http\Controllers\AsesmenCeklisController;
 use App\Http\Controllers\AsesmenDokumenKaryaController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\TabunganController;
 use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TahunPelajaranController;
 use App\Http\Controllers\WilayahController;
+use App\Models\AcademicCalendar;
 use App\Models\PortofolioSiswa;
 use App\Models\Presensi;
 use Illuminate\Support\Facades\Route;
@@ -65,6 +67,13 @@ Route::middleware('auth:sanctum')->group(function () {
         ->controller(SiswaController::class)
         ->group(function(){
             Route::get('show/{kelas_id?}','show')->name('show');
+        });
+
+        Route::prefix('kalender')
+        ->name('kalender.')
+        ->controller(AcademicCalendarController::class)
+        ->group(function(){
+            Route::get('show','show')->name('show');
         });
 
 
@@ -171,6 +180,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('withdraw','mutasiKeluar');
         Route::put('update/{transaksi_id}','update');
         Route::delete('delete/{tabungan_id}','destroy');
+        Route::get('siswa/{siswa_id}','showTabunganBySiswa');
         Route::get('tabungan_siswa/{id}','show_by_id');
     });
 

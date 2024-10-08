@@ -48,19 +48,17 @@ class TabunganController extends Controller
         if ($this->user->role != 'guru' && $this->user->role != 'admin') {
             return response()->json(['message' => 'unauthorized'],401);
         }
-
         
-        
+        $request->validate([
+            'siswa_id' => 'required',
+            'tahun_ajaran_id' => 'required',
+            'jenis' => ['required',Rule::in(['deposit','withdraw'])],
+            'mutasi_masuk' => 'required',
+            'tanggal_transaksi' => 'required',
+            'keterangan' => 'required'
+        ]);
         try {
             
-            $request->validate([
-                'siswa_id' => 'required',
-                'tahun_ajaran_id' => 'required',
-                'jenis' => ['required',Rule::in(['deposit','withdraw'])],
-                'mutasi_masuk' => 'required',
-                'tanggal_transaksi' => 'required',
-                'keterangan' => 'required'
-            ]);
             // add siswa_id data
             $data = $request->all();
 
@@ -249,6 +247,18 @@ class TabunganController extends Controller
         ->orderBy('created_at','desc')
         ->paginate($length);
 
+        return response()
+        ->json($tabungan);
+    }
+
+
+    public function showTabunganBySiswa(int $siswaId){
+        $tabungan = TransaksiTabungan::with('siswa')
+        ->where('siswa_id',$siswaId)
+        ->orderBy('id','DESC')
+        ->paginate(10);
+
+        Log::info($tabungan);
         return response()
         ->json($tabungan);
     }

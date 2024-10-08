@@ -9,9 +9,9 @@ import "./Moderenize/app.init.js";
 import "./Moderenize/sidebarmenu.js";
 import "./Moderenize/app-style-switcher.js";
 // import "./Moderenize/custom.js";
-
 import layoutMixin from './layoutMixin';
 
+import { createPinia } from 'pinia';
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
@@ -43,11 +43,13 @@ createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
      setup({ el, App, props, plugin }) {
+        const pinia = createPinia();
         const app = createApp({ render: () => h(App, props) });
         app.mixin(layoutMixin);
         app.use(plugin)
             .use(ZiggyVue)
             .use(VueSweetalert2)
+            .use(pinia)
             .component("v-select", vSelect)
             .component("v-search", SearchInput)
             .component('select-siswa',SelectSiswa)
