@@ -49,6 +49,8 @@ class LoginController extends Controller
     }
 
     public function loginApi(Request $request){
+        // dd($request->all());
+
         try {
             $request->validate([
                 'email' => 'required',

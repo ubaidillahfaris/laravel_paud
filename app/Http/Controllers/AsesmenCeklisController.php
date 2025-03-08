@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PostAsesmenCeklis;
 use App\Http\Requests\UpdateAsesmenCeklisRequest;
 use App\Models\AsesmenCeklis;
+use App\Models\Siswa;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class AsesmenCeklisController extends Controller
 {
@@ -42,6 +45,31 @@ class AsesmenCeklisController extends Controller
                 'detail' => $th->getMessage()
             ],500);
         }
+    }
+
+    /**
+     * Menampilkan daftar siswa asesmen ceklis pada rpph hari ini 
+     */
+    public function show_by_rpph_today(Request $request){
+        $requestParam = $request->validate([
+            'kelas' => 'required',
+            'tahun_ajaran' => 'nullable',
+            'has_asesmen' => ['required',Rule::in('true','false')]
+        ]);
+
+        $requestParam['length'] = $request->length??10;
+        $now = Carbon::now();
+
+        $siswa = Siswa::where('kelas_id',$requestParam['kelas'])
+        ->with('rpph',function($sub) use($now, $requestParam) {
+            $sub->where('start_date','>=',$now)
+            ->where('end_date','<=',$now);
+        })
+        ->with('rpph.asesmen_ceklis')
+        ->whereHas('rpph.asesmen_ceklis')
+        ->paginate($requestParam['length']);
+
+        return response()->json($siswa);
     }
 
     /**

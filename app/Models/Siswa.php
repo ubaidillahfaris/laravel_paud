@@ -61,6 +61,10 @@ class Siswa extends Model
         return $this->hasOne(Tabungan::class,'siswa_id','id');
     }
 
+    public function rpph(){
+        return $this->hasOneThrough(Rpph::class,Kelas::class,'id','kelas_id','kelas_id','id');
+    }
+
     public function asesmen_ceklis(){
         return $this->hasMany(AsesmenCeklis::class,'siswa_id','id');
     }

@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\KurikulumSekolah;
 use App\Models\Rpph;
+use App\Models\Siswa;
 use App\Models\TahunPelajaran;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -38,6 +40,100 @@ class RpphController extends Controller
             'kurikulum' => $kurikulum->kurikulum
         ]);
     }
+
+
+    /**
+     * Show rpph today
+     */
+    public function show_rpph_today_by_kelas(Request $request){
+        $kelas_id = $request->kelas_id??null;
+        $now = Carbon::now()->format('Y-m-d');
+        
+        $rpph = Rpph::where('start_date','<=',$now)
+        ->where('end_date','>=',$now)
+        ->when($kelas_id, function($sub) use($kelas_id){
+            $sub->where('kelas_id',$kelas_id);
+        })
+        ->paginate();
+        $rpph->load(['kelas', 'asesmen_ceklis', 'asesmen_catatan_anekdot', 'asesmen_dokumen_hasil_karya', 'asesmen_foto_berseri','semester']);
+        $rpph->loadCount('siswa');
+
+        // Group the relations by siswa_id
+        $rpph->getCollection()->transform(function($item) {
+
+            $asesmen_ceklis_count = $item->asesmen_ceklis->groupBy('siswa_id')->count();
+            $asesmen_catatan_anekdot_count = $item->asesmen_catatan_anekdot->groupBy('siswa_id')->count();
+            $asesmen_dokumen_hasil_karya_count = $item->asesmen_dokumen_hasil_karya->groupBy('siswa_id')->count();
+            $asesmen_foto_berseri_count = $item->asesmen_foto_berseri->groupBy('siswa_id')->count();
+            
+            $item->unsetRelation('asesmen_ceklis');
+            $item->unsetRelation('asesmen_catatan_anekdot');
+            $item->unsetRelation('asesmen_dokumen_hasil_karya');
+            $item->unsetRelation('asesmen_foto_berseri');
+           
+            $minValue = max(array($asesmen_catatan_anekdot_count, $asesmen_ceklis_count, $asesmen_dokumen_hasil_karya_count, $asesmen_foto_berseri_count));
+            $item->siswa_belum_diinput = $item->siswa_count - $minValue;
+            if ($item->siswa_belum_diinput < 0) {
+                $item->siswa_belum_diinput = 0;
+            }
+            return $item;
+        });
+
+        return response()
+        ->json($rpph);
+    }
+
+    /**
+     * Menampilkan data siswa yang belum dicatatat asesmen berdasar rpph
+     */
+    public function show_siswa_doesnt_have_asesmen(Request $request, int $rpph_id, int $kelas_id){
+        
+        $siswa = Siswa::with('kota_lahir','kelas')->where('kelas_id',$kelas_id)
+        ->whereHas('rpph',function($sub) use($rpph_id){
+            $sub->where('rpphs.id',$rpph_id);
+        })
+        ->where(function($subRpph) use($rpph_id){
+            $subRpph->whereDoesntHave('asesmen_ceklis',function($sub) use($rpph_id){
+                $sub->where('rpph_id',$rpph_id);
+            })->WhereDoesntHave('asesmen_dokumen_karya',function($sub) use($rpph_id){
+                $sub->where('rpph_id',$rpph_id);
+            })->WhereDoesntHave('asesmen_catatan_anekdot',function($sub) use($rpph_id){
+                $sub->where('rpph_id',$rpph_id);
+            })->WhereDoesntHave('asesmen_foto_berseri',function($sub) use($rpph_id){
+                $sub->where('rpph_id',$rpph_id);
+            });
+        })
+        ->paginate();
+
+        return response()->json($siswa);
+    }
+
+
+    /**
+     * Menampilkan data siswa yang memiliki dicatatat asesmen berdasar rpph
+     */
+    public function show_siswa_have_asesmen(Request $request, int $rpph_id, int $kelas_id){
+        
+        $siswa = Siswa::with('kota_lahir','kelas')->where('kelas_id',$kelas_id)
+        ->whereHas('rpph',function($sub) use($rpph_id){
+            $sub->where('rpphs.id',$rpph_id);
+        })
+        ->where(function($subRpph) use($rpph_id){
+            $subRpph->whereHas('asesmen_ceklis',function($sub) use($rpph_id){
+                $sub->where('rpph_id',$rpph_id);
+            })->orWhereHas('asesmen_dokumen_karya',function($sub) use($rpph_id){
+                $sub->where('rpph_id',$rpph_id);
+            })->orWhereHas('asesmen_catatan_anekdot',function($sub) use($rpph_id){
+                $sub->where('rpph_id',$rpph_id);
+            })->orWhereHas('asesmen_foto_berseri',function($sub) use($rpph_id){
+                $sub->where('rpph_id',$rpph_id);
+            });
+        })
+        ->paginate();
+
+        return response()->json($siswa);
+    }
+    
 
     /**
      * public function show rpph

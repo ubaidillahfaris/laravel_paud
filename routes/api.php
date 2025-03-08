@@ -10,6 +10,8 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\OrangTuaController;
 use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\PpdbMasterController;
+use App\Http\Controllers\PresensiController;
+use App\Http\Controllers\RpphController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\SurveyAsesmenController;
@@ -18,6 +20,7 @@ use App\Http\Controllers\TabunganController;
 use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TahunPelajaranController;
 use App\Http\Controllers\WilayahController;
+use App\Models\Presensi;
 use Illuminate\Support\Facades\Route;
 
 
@@ -51,6 +54,17 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('show/{kelas_id?}','show')->name('show');
         });
 
+
+        Route::prefix('presensi')
+        ->name('presensi.')
+        ->controller(PresensiController::class)
+        ->group(function(){
+            Route::get('show_all','show_all')->name('show_all');
+            Route::get('show/{presensiId}','show')->name('show');
+            Route::post('store','store')->name('store');
+            Route::put('update/{presensiId}','update')->name('update');
+            Route::delete('delete/{presensiId}','destroy')->name('delete');
+        });
     });
 
     // Group route wali meurid
@@ -130,6 +144,17 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
 
+    /**
+     * Rpph route
+     */
+    Route::prefix('rpph')
+    ->controller(RpphController::class)
+    ->group(function(){
+        Route::get('show_rpph_today_by_kelas','show_rpph_today_by_kelas');
+        Route::get('show_siswa_doesnt_have_asesmen/{rpph_id}/{kelas_id}','show_siswa_doesnt_have_asesmen');
+        Route::get('show_siswa_have_asesmen/{rpph_id}/{kelas_id}','show_siswa_have_asesmen');
+    });
+
     // asesmen route
     Route::prefix('asesmen')
     ->group(function(){
@@ -141,6 +166,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::put('update/{id}','update');
             Route::post('store','store');
             Route::get('show_by_id/{id}','show_by_id');
+            Route::get('show_rpph','show_by_rpph_today');
             Route::delete('delete/{asesmen_ceklis}','destroy');
         });
 
