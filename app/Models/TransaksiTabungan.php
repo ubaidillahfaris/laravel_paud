@@ -18,4 +18,8 @@ class TransaksiTabungan extends Model
         'tanggal_transaksi',
         'keterangan'
     ];
+
+    public function siswa(){
+        return $this->belongsTo(Siswa::class,'siswa_id','id');
+    }
 }

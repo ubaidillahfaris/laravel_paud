@@ -12,18 +12,8 @@ use Inertia\Inertia;
 class ProgramLayananController extends Controller
 {
 
-    protected $sekolah;
-
     public function __construct() {
-        try {
-            $user = User::where('id',Auth::user()->id)
-            ->with('sekolah')
-            ->first();
-
-            $this->sekolah = $user->sekolah;
-        } catch (\Throwable $th) {
-            abort(400);
-        }
+        parent::__construct();
     }
 
     /**
@@ -66,12 +56,12 @@ class ProgramLayananController extends Controller
      */
     public function store(Request $request)
     {
-        try {
 
-            $request->validate([
-                'name' => 'required'
-            ]);
-            
+        $request->validate([
+            'name' => 'required'
+        ]);
+        
+        try {
             ProgramLayanan::create([
                 'sekolah_id' => $this->sekolah->id,
                 'name' => $request->name
@@ -82,13 +72,6 @@ class ProgramLayananController extends Controller
                 'message' => 'Berhasil membuat data program layanan'
             ]);
         } 
-        catch (ValidationException $th){
-            return response()
-            ->json([
-                'message' => 'Gagal membuat data program layanan',
-                'detail' => $th->getMessage()
-            ],400);
-        }
         catch (\Throwable $th) {
             return response()
             ->json([
@@ -101,12 +84,16 @@ class ProgramLayananController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(int $id)
+    public function show(Request $request)
     {
-        $programLayanan = ProgramLayanan::where('id',$id)->first();
-        return Inertia::render('ProgramLayanan/Detail',[
-            'program_layanan' => $programLayanan
-        ]);
+        $length = $request->length??10;
+        $sekolah = $this->sekolah;
+        
+        $programLayanan = ProgramLayanan::where('sekolah_id',$sekolah->id)
+        ->paginate($length);
+        
+        return response()
+        ->json($programLayanan);
     }
 
     /**

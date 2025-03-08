@@ -84,7 +84,7 @@ export default {
             if (urlParam) {
                 url = urlParam;
             } else {
-                url = route('program_layanan.data',{
+                url = route('program_layanan.show',{
                     length: this.length,
                     search: this.search
                 })

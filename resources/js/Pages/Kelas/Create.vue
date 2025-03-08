@@ -87,7 +87,9 @@ export default {
             try {
                 let request = await axios.get(route('tahun_ajaran.show_all'));
                 let response = request.data;
-                this.tahunAjaranList = response.map((item) => {
+                
+                
+                this.tahunAjaranList = response.data.map((item) => {
                     return {
                         'code' : item.id,
                         'label' : `${item.start_tahun}/${item.end_tahun} - Semester ${new StringManipulation().capitalizeLetter(item.semester)}`

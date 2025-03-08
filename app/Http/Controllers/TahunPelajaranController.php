@@ -81,20 +81,9 @@ class TahunPelajaranController extends Controller
         }
     }
 
-    public function showAll(Request $request){
-         // mengambil data sekolah user request
-        $user = $request->user();
-        $sekolahId = null;
-        switch ($user->role) {
-            case 'guru':
-                $sekolahId = $user->guru->sekolah_id;
-            break;
-            case 'admin':
-                $sekolahId = $user->sekolah->sekolah_id;
-            break;
-        }
-
-        $tahunAjaran = TahunPelajaran::where('sekolah_id',$sekolahId)
+    public function show(Request $request){
+      
+        $tahunAjaran = TahunPelajaran::with('kota_pembagian')->where('sekolah_id',$this->sekolah->id)
         ->where('is_active',true)
         ->orderBy('id','DESC')
         ->first();
@@ -103,7 +92,7 @@ class TahunPelajaranController extends Controller
         ->json($tahunAjaran);
     }
 
-    public function show(Request $request){
+    public function showAll(Request $request){
         // parameter
         $length = $request->length??10;
         $getTahunAjaran = $request->tahun_ajaran??null;
@@ -117,7 +106,7 @@ class TahunPelajaranController extends Controller
                 $sekolahId = $user->guru->sekolah_id;
             break;
             case 'admin':
-                $sekolahId = $user->sekolah->sekolah_id;
+                $sekolahId = $user->sekolah->id;
             break;
         }
     
@@ -129,6 +118,8 @@ class TahunPelajaranController extends Controller
         ->where('sekolah_id',$sekolahId)
         ->orderBy('id','DESC')
         ->paginate($length);
+
+
         return response()
         ->json($tahunAjaran);
     }

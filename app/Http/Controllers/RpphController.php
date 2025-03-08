@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kurikulum;
 use App\Models\KurikulumSekolah;
 use App\Models\Rpph;
 use App\Models\Siswa;
@@ -17,7 +18,11 @@ use Inertia\Inertia;
 class RpphController extends Controller
 {
 
-
+    
+    public function __construct()
+    {
+        parent::__construct();
+    }
     /**
      * index page
      */
@@ -29,16 +34,21 @@ class RpphController extends Controller
      * Create page
      */
     public function create(KelasController $kelasController){
-        $user_guru = Auth::user();
-        $sekolahId = $user_guru->guru->sekolah_id;
-        $kelas = $kelasController->show_kelas_by_sekolah($sekolahId);
-        $kurikulum = KurikulumSekolah::where('sekolah_id',$sekolahId)->first();
-        
-        return Inertia::render('Rpph/Create',[
-            'guru' => $user_guru,
-            'kelas' => $kelas,
-            'kurikulum' => $kurikulum->kurikulum
-        ]);
+        try {
+            $sekolahId = $this->sekolah->id;
+            $kelas = $kelasController->show_kelas_by_sekolah($sekolahId);
+            
+            $kurikulum = Kurikulum::where('sekolah_id',$sekolahId)->first();
+            
+            return Inertia::render('Rpph/Create',[
+                'guru' => Auth::user()->guru,
+                'kelas' => $kelas,
+                'kurikulum' => $kurikulum
+            ]);
+        } catch (\Throwable $th) {
+            dd($th);
+            abort(500);
+        }
     }
 
 

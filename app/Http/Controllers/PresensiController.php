@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PresensiStoreRequest;
 use App\Http\Requests\PresensiUpdaterequest;
 use App\Models\Presensi;
+use App\Models\Siswa;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,7 +39,15 @@ class PresensiController extends Controller
             $userId = Auth::user()->id;
             $data['created_by'] = $userId;
             
-            Presensi::create($data);
+            Presensi::updateOrCreate(
+                [
+                    'siswa_id' => $data['siswa_id'],
+                    'kelas_id' => $data['kelas_id'],
+                    'tanggal' => $data['tanggal'],
+                    'tahun_ajaran_id' => $data['tahun_ajaran_id']
+                ],
+                $data
+            );
             return response()
             ->json([
                 'message' => 'Berhasil membuat presensi'
@@ -78,7 +87,7 @@ class PresensiController extends Controller
         $length = $request->length??10;
         $date = $request->date??null;
         $siswa = null;
-        $tahunAjaran = $request->tahun_ajaran??null;
+        $tahunAjaran = $request->tahun_ajaran??$this->tahunAjaranAktif->id;
         $kelas = null;
         $status = $request->status??null;
         $created_by = $request->created_by??null;
@@ -88,38 +97,26 @@ class PresensiController extends Controller
         switch ($user->role) {
             case 'guru':
                 $userSekolah = $user->guru;
-                $kelas = $userSekolah->kelas_id;
                 break;
             case 'wali':
                 $siswa = $request->siswa;
                 break;
         }
-    
-        $presensi = Presensi::with('siswa','kelas','tahun_ajaran','created_by')
-        ->when($search != null, function($sub)use($search){
-            $sub->whereHas('siswa',function($subSiswa)use($search){
-                $subSiswa->whereAny(['nama_lengkap','nama_panggilan','nik'],'ilike',"%$search%");
+
+        $kelas = $request->kelas ?? $userSekolah->kelas_id;
+        
+        $siswa = Siswa::with('kota_lahir','kelas','presensi')
+        ->whereHas('kelas',function($sub)use($kelas){
+            $sub->where('id',$kelas);
+        })
+        ->when($date != null || $tahunAjaran != null,function($sub)use($date,$tahunAjaran){
+            $sub->with('presensi',function($subKelas)use($date,$tahunAjaran){
+                $subKelas->where('tanggal',$date)
+                ->where('tahun_ajaran_id',$tahunAjaran);
             });
         })
-        ->when($siswa != null, function($sub)use($siswa){
-            $sub->where('siswa_id',$siswa);
-        })
-        ->when($date != null,function($sub)use($date){
-            $sub->where('date',$date);
-        })
-        ->when($tahunAjaran != null, function($sub)use($tahunAjaran){
-            $sub->where('tahun_ajaran_id',$tahunAjaran);
-        })
-        ->when($kelas != null, function($sub)use($kelas){
-            $sub->where('kelas_id',$kelas);
-        })
-        ->when($created_by != null, function($sub)use($created_by){
-            $sub->where('created_by',$created_by);
-        })
-        ->when($status != null, function($sub)use($status){
-            $sub->where('status',$status);
-        })
         ->paginate($length);
+        return response()->json($siswa);
 
         return response()->json($presensi);
     }

@@ -7,10 +7,10 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KegiatanRpphController;
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\KurikulumController;
 use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\PpdbMasterController;
 use App\Http\Controllers\ProgramLayananController;
-use App\Http\Controllers\RiwayatKelasController;
 use App\Http\Controllers\RpphController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\SiswaController;
@@ -102,6 +102,19 @@ Route::middleware('auth')
     Route::middleware(AdminMiddleware::class)
     ->group(function(){
 
+        Route::prefix('kurikulum')
+        ->name('kurikulum.')
+        ->controller(KurikulumController::class)
+        ->group(function(){
+            Route::get('/','index')->name('index');
+            Route::get('create','create')->name('create');
+            Route::get('show_all','show_all')->name('show_all');
+            Route::get('show/{id}','show')->name('show');
+            Route::post('store','store')->name('store');
+            Route::put('update/{id}','update')->name('update');
+            Route::delete('delete/{id}','destroy')->name('delete');
+        });
+
         Route::prefix('tahun_ajaran')
         ->name('tahun_ajaran.')
         ->controller(TahunPelajaranController::class)
@@ -129,9 +142,9 @@ Route::middleware('auth')
         ->controller(ProgramLayananController::class)
         ->group(function(){
             Route::get('index','index')->name('index');
-            Route::get('data','data')->name('data');
+            // Route::get('data','data')->name('data');
             Route::post('store','store')->name('store');
-            Route::get('show/{id}','show')->name('show');
+            Route::get('show','show')->name('show');
             Route::put('update/{id}','update')->name('update');
             Route::delete('delete/{id}','destroy')->name('delete');
         });
@@ -162,7 +175,6 @@ Route::middleware('auth')
             });
         });
 
-        
     });
     /**
      * end admin route

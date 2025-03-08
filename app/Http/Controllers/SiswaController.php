@@ -98,8 +98,7 @@ class SiswaController extends Controller implements HasMiddleware
         $tahunAjaran = $request->tahun_ajaran??null;
         $sekolah_id = $this->sekolah_id;
         
-        // base query
-        Log::info($this->relation);
+        // base quer
         $siswa = Siswa::with($this->relation)
         ->when($search, function($sub) use($search){
             $sub->whereAny(['nama_lengkap','nama_panggilan'],'ilike',"%$search%");

@@ -21,7 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role'
+        'role',
+        'foto',
+        'no_wa'
     ];
 
     /**
@@ -48,7 +50,14 @@ class User extends Authenticatable
     }
 
     public function sekolah(){
-        return $this->hasOneThrough(Sekolah::class,AdminSekolah::class,'user_id','id','id','sekolah_id');
+        return $this->hasOneThrough(
+            Sekolah::class,
+            AdminSekolah::class,
+            'user_id', // Foreign key on the AdminSekolah table...
+            'id', // Foreign key on the Sekolah table...
+            'id', // Local key on the User table...
+            'sekolah_id' // Local key on the AdminSekolah table...
+        );
     }
 
     public function guru(){

@@ -1,6 +1,5 @@
 <template>
    <div class="w-full card p-4">
-        <div class="grid grid-cols-1"></div>
         <div class="d-sm-flex d-block align-items-center justify-content-between mb-9">
             <div class="mb-3 mb-sm-0">
                 <h5 class="card-title fw-semibold">Daftar Tahun Ajaran</h5>
@@ -124,7 +123,7 @@ export default {
         async fetchData(urlParam){
             let url;
             if (!url) {
-                url = route('tahun_ajaran.show',{
+                url = route('tahun_ajaran.show_all',{
                     _query:{
                         length: this.selectedLength
                     }

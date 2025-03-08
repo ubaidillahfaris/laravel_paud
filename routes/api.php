@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AcademicCalendarController;
 use App\Http\Controllers\AsesmenCatatanAnekdotController;
 use App\Http\Controllers\AsesmenCeklisController;
 use App\Http\Controllers\AsesmenDokumenKaryaController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\OrangTuaController;
+use App\Http\Controllers\PortofolioSiswaController;
 use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\PpdbMasterController;
 use App\Http\Controllers\PresensiController;
@@ -20,6 +22,8 @@ use App\Http\Controllers\TabunganController;
 use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TahunPelajaranController;
 use App\Http\Controllers\WilayahController;
+use App\Models\AcademicCalendar;
+use App\Models\PortofolioSiswa;
 use App\Models\Presensi;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +32,17 @@ Route::post('/login', [LoginController::class, 'loginApi']);
 Route::post('/register',[RegisteredUserController::class,'registerApi']);
 
 Route::middleware('auth:sanctum')->group(function () {
+
+
+    // route user
+    Route::prefix('user')
+    ->name('user.')
+    ->controller(\App\Http\Controllers\UserController::class)
+    ->group(function(){
+        Route::put('{userId}', 'update')->name('update');
+        Route::delete('{userId}', 'destroy')->name('destroy');
+    });
+
 
     // Group route guru
     Route::prefix('guru')
@@ -54,6 +69,13 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('show/{kelas_id?}','show')->name('show');
         });
 
+        Route::prefix('kalender')
+        ->name('kalender.')
+        ->controller(AcademicCalendarController::class)
+        ->group(function(){
+            Route::get('show','show')->name('show');
+        });
+
 
         Route::prefix('presensi')
         ->name('presensi.')
@@ -64,6 +86,24 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('store','store')->name('store');
             Route::put('update/{presensiId}','update')->name('update');
             Route::delete('delete/{presensiId}','destroy')->name('delete');
+        });
+
+        Route::prefix('portofolio_siswa')
+        ->controller(PortofolioSiswaController::class)
+        ->group(function(){
+            Route::get('show/{portofolioId}','show');
+            Route::get('show_all','show_all');
+            Route::post('store','store');
+            Route::put('update/{portofolioId}','update');
+            Route::delete('delete/{portofolioId}','destroy');
+        });
+
+        Route::prefix('tahun_ajaran')
+        ->name('tahun_ajaran.')
+        ->controller(TahunPelajaranController::class)
+        ->group(function(){
+            Route::get('show','show')->name('show');
+            Route::get('show_all','showAll')->name('show_all');
         });
     });
 
@@ -140,6 +180,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('withdraw','mutasiKeluar');
         Route::put('update/{transaksi_id}','update');
         Route::delete('delete/{tabungan_id}','destroy');
+        Route::get('siswa/{siswa_id}','showTabunganBySiswa');
         Route::get('tabungan_siswa/{id}','show_by_id');
     });
 
